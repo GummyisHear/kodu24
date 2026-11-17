@@ -123,4 +123,4 @@ erDiagram
 - **Pildid:** failid salvestatakse kettale (nt `uploads/` kausta), andmebaasis on ainult `FileName`.
 - **Valikulised väljad:** `SavedSearches.MinPrice`, `MaxPrice`, `Rooms` ja `DistrictId` on nullable, sest otsija võib filtreid vabalt kombineerida.
 - **`LastNotifiedAt`:** Worker kasutab seda parameetrina `createdAfter`, et leida ainult uued kuulutused.
-- **Indeksid:** `Listings` tabelis `(DistrictId, Price)` ja `CreatedAt`, kuna need on peamised filtrid.
+- **Indeksid:** `Listings` tabelis `(DistrictId, Price)` ja `CreatedAt`, kuna need on peamised filtrid. 
