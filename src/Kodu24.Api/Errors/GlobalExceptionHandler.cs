@@ -21,7 +21,9 @@ public class GlobalExceptionHandler : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        var problem = new ProblemDetails();
+        ProblemDetails problem = exception is ValidationFailedException validation
+            ? new HttpValidationProblemDetails(validation.Errors)
+            : new ProblemDetails();
 
         if (exception is ApiException api)
         {

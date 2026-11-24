@@ -31,6 +31,20 @@ public class GlobalExceptionHandlerTests
     }
 
     [Fact]
+    public async Task ValidationFailedException_WritesFieldErrors()
+    {
+        var (handler, service) = Create();
+        var context = new DefaultHttpContext();
+
+        await handler.TryHandleAsync(context, new ValidationFailedException("DistrictId", "Linnaosa ei ole olemas."), CancellationToken.None);
+
+        Assert.Equal(400, context.Response.StatusCode);
+        service.Verify(s => s.TryWriteAsync(It.Is<ProblemDetailsContext>(p =>
+            p.ProblemDetails is HttpValidationProblemDetails &&
+            ((HttpValidationProblemDetails)p.ProblemDetails).Errors["DistrictId"][0] == "Linnaosa ei ole olemas.")), Times.Once);
+    }
+
+    [Fact]
     public async Task UnexpectedException_Returns500WithoutLeakingDetails()
     {
         var (handler, service) = Create();
