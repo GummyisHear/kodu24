@@ -7,4 +7,30 @@ Accept: application/json
 ### Tundmatu tee -> 404 ProblemDetails
 GET {{Kodu24.Api_HostAddress}}/api/olematu
 
+### Registreerimine
+POST {{Kodu24.Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "uus.kasutaja@kodu24.ee",
+  "password": "Parool123!",
+  "fullName": "Kati Karu",
+  "phone": "+3725551234",
+  "role": "Seeker"
+}
+
+### Sisselogimine (testkonto)
+# @name login
+POST {{Kodu24.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "liis@kodu24.ee",
+  "password": "Parool123!"
+}
+
+### Sisselogitud kasutaja (token eelmisest päringust)
+GET {{Kodu24.Api_HostAddress}}/api/auth/me
+Authorization: Bearer {{login.response.body.$.token}}
+
 ###

@@ -19,6 +19,9 @@ public abstract class ApiException : Exception
 public class NotFoundException(string detail)
     : ApiException(StatusCodes.Status404NotFound, "Ressurssi ei leitud", detail);
 
+public class UnauthorizedException(string detail)
+    : ApiException(StatusCodes.Status401Unauthorized, "Autentimine ebaõnnestus", detail);
+
 public class ForbiddenException(string detail)
     : ApiException(StatusCodes.Status403Forbidden, "Juurdepääs keelatud", detail);
 
