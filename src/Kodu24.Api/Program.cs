@@ -35,7 +35,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Ühtne veakäsitlus: kõik vead tagastatakse ProblemDetails (RFC 9457) kujul.
-builder.Services.AddProblemDetails();
+builder.Services.AddProblemDetails(options =>
+    options.CustomizeProblemDetails = context => ProblemDetailsTitles.Apply(context.ProblemDetails));
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // JWT autentimine. Võti peab olema vähemalt 32 baiti (HMAC-SHA256) ega tohi olla repositooriumis:
