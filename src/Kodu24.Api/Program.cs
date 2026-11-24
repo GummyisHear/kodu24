@@ -5,6 +5,7 @@ using Kodu24.Api.Data;
 using Kodu24.Api.Errors;
 using Kodu24.Api.Repositories;
 using Kodu24.Api.Services;
+using Kodu24.Api.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,6 +33,16 @@ builder.Services.AddSwaggerGen(options =>
     // Kontrollerite ja DTO-de XML kommentaarid kuvatakse Swaggeris kirjeldusena.
     var xmlFile = $"{typeof(Program).Assembly.GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
+
+    // Authorize nupp: kleebi sinna /api/auth/login vastusest saadud token (ilma "Bearer " eesliiteta).
+    options.AddSecurityDefinition(AuthorizeOperationFilter.SchemeName, new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT token, mille saad otspunktist POST /api/auth/login.",
+    });
+    options.OperationFilter<AuthorizeOperationFilter>();
 });
 
 // Ühtne veakäsitlus: kõik vead tagastatakse ProblemDetails (RFC 9457) kujul.
