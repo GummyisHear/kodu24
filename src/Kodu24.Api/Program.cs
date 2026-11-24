@@ -1,8 +1,13 @@
+using System.Security.Cryptography;
+using System.Text;
+using Kodu24.Api.Auth;
 using Kodu24.Api.Data;
 using Kodu24.Api.Errors;
 using Kodu24.Api.Repositories;
 using Kodu24.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Serilog;
 
@@ -32,6 +37,51 @@ builder.Services.AddSwaggerGen(options =>
 // Ühtne veakäsitlus: kõik vead tagastatakse ProblemDetails (RFC 9457) kujul.
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+// JWT autentimine. Võti peab olema vähemalt 32 baiti (HMAC-SHA256) ega tohi olla repositooriumis:
+// see tuleb user-secrets'ist või keskkonnamuutujast Jwt__Key.
+var jwt = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+if (Encoding.UTF8.GetByteCount(jwt.Key) < 32)
+{
+    if (!builder.Environment.IsDevelopment())
+        throw new InvalidOperationException(
+            "JWT võti puudub või on liiga lühike. Määra Jwt:Key (nt keskkonnamuutuja Jwt__Key), vähemalt 32 tähemärki.");
+
+    // Arenduses genereeritakse igal käivitusel juhuslik võti: värske kloon töötab kohe,
+    // kuid tokenid kaotavad kehtivuse pärast API taaskäivitust.
+    jwt.Key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(48));
+    Console.WriteLine("HOIATUS: Jwt:Key puudub, kasutan ajutist arendusvõtit (tokenid kehtivad kuni taaskäivituseni).");
+}
+
+builder.Services.Configure<JwtOptions>(options =>
+{
+    options.Issuer = jwt.Issuer;
+    options.Audience = jwt.Audience;
+    options.Key = jwt.Key;
+    options.ExpiresMinutes = jwt.ExpiresMinutes;
+});
+builder.Services.AddSingleton<ITokenService, JwtTokenService>();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.MapInboundClaims = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwt.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwt.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromMinutes(1),
+            NameClaimType = AuthClaims.Name,
+            RoleClaimType = AuthClaims.Role,
+        };
+    });
+builder.Services.AddAuthorization();
 
 // CORS: brauseriklient (React/Vite) tohib API-t kutsuda ainult lubatud aadressidelt.
 const string WebClientCors = "WebClient";
@@ -82,6 +132,7 @@ app.UseHttpsRedirection();
 
 app.UseCors(WebClientCors);
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
