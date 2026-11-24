@@ -1,4 +1,5 @@
 using Kodu24.Api.Data;
+using Kodu24.Api.Errors;
 using Kodu24.Api.Repositories;
 using Kodu24.Api.Services;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,10 @@ builder.Host.UseSerilog((context, config) =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Ühtne veakäsitlus: kõik vead tagastatakse ProblemDetails (RFC 9457) kujul.
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
@@ -29,6 +34,10 @@ builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IDistrictService, DistrictService>();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
+// Tühjad 4xx/5xx vastused (nt tundmatu tee) saavad samuti ProblemDetails keha.
+app.UseStatusCodePages();
 
 // Üks logirida iga HTTP päringu kohta (meetod, tee, staatus, kestus).
 app.UseSerilogRequestLogging();
