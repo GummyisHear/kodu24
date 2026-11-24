@@ -8,11 +8,13 @@ public class ListingService : IListingService
 {
     private readonly IListingRepository _listings;
     private readonly TimeProvider _time;
+    private readonly ILogger<ListingService> _logger;
 
-    public ListingService(IListingRepository listings, TimeProvider time)
+    public ListingService(IListingRepository listings, TimeProvider time, ILogger<ListingService> logger)
     {
         _listings = listings;
         _time = time;
+        _logger = logger;
     }
 
     public async Task<ListingDetailDto?> GetByIdAsync(int id)
@@ -35,6 +37,7 @@ public class ListingService : IListingService
         }
 
         await _listings.SaveChangesAsync();
+        _logger.LogInformation("Märgiti aegunuks {Count} kuulutust", expired.Count);
         return expired.Count;
     }
 }

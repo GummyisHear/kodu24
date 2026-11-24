@@ -1,6 +1,7 @@
 using Kodu24.Api.Entities;
 using Kodu24.Api.Repositories;
 using Kodu24.Api.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace Kodu24.Tests;
@@ -16,6 +17,9 @@ public class ListingServiceTests
         return time;
     }
 
+    private static ListingService CreateService(Mock<IListingRepository> repo) =>
+        new(repo.Object, FixedTime().Object, NullLogger<ListingService>.Instance);
+
     [Fact]
     public async Task ExpireListingsAsync_MarksExpiredListingsAsDeleted()
     {
@@ -27,7 +31,7 @@ public class ListingServiceTests
         var repo = new Mock<IListingRepository>();
         repo.Setup(r => r.GetExpiredAsync(Now.UtcDateTime)).ReturnsAsync(expired);
 
-        var service = new ListingService(repo.Object, FixedTime().Object);
+        var service = CreateService(repo);
 
         var count = await service.ExpireListingsAsync();
 
@@ -46,7 +50,7 @@ public class ListingServiceTests
         var repo = new Mock<IListingRepository>();
         repo.Setup(r => r.GetExpiredAsync(It.IsAny<DateTime>())).ReturnsAsync(new List<Listing>());
 
-        var service = new ListingService(repo.Object, FixedTime().Object);
+        var service = CreateService(repo);
 
         var count = await service.ExpireListingsAsync();
 
