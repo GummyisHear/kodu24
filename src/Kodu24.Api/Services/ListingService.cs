@@ -1,4 +1,5 @@
-using Kodu24.Api.Entities;
+using Kodu24.Api.Dtos;
+using Kodu24.Api.Mapping;
 using Kodu24.Api.Repositories;
 
 namespace Kodu24.Api.Services;
@@ -14,7 +15,11 @@ public class ListingService : IListingService
         _time = time;
     }
 
-    public Task<Listing?> GetByIdAsync(int id) => _listings.GetWithDetailsAsync(id);
+    public async Task<ListingDetailDto?> GetByIdAsync(int id)
+    {
+        var listing = await _listings.GetWithDetailsAsync(id);
+        return listing?.ToDetailDto();
+    }
 
     public async Task<int> ExpireListingsAsync()
     {
