@@ -93,7 +93,7 @@ builder.Services
             RoleClaimType = AuthClaims.Role,
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options => options.AddKodu24Policies());
 
 // CORS: brauseriklient (React/Vite) tohib API-t kutsuda ainult lubatud aadressidelt.
 const string WebClientCors = "WebClient";
