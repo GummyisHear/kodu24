@@ -1,6 +1,3 @@
 @Kodu24.Api_HostAddress = http://localhost:5134
 
-GET {{Kodu24.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
 ###
