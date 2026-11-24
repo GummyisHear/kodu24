@@ -1,20 +1,30 @@
 using Kodu24.Api.Data;
+using Kodu24.Api.Repositories;
+using Kodu24.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
-// Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
-// after builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+
+// Kellaaeg teenusena, et teste saaks kindla ajaga käivitada.
+builder.Services.AddSingleton(TimeProvider.System);
+
+// Repositooriumid
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IListingRepository, ListingRepository>();
+
+// Teenused (äriloogika)
+builder.Services.AddScoped<IListingService, ListingService>();
+builder.Services.AddScoped<IDistrictService, DistrictService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
