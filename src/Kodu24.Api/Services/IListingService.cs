@@ -1,10 +1,10 @@
-using Kodu24.Api.Entities;
+using Kodu24.Api.Dtos;
 
 namespace Kodu24.Api.Services;
 
 public interface IListingService
 {
-    Task<Listing?> GetByIdAsync(int id);
+    Task<ListingDetailDto?> GetByIdAsync(int id);
 
     /// <summary>
     /// Märgib aegunud kuulutused kustutatuks (soft delete).

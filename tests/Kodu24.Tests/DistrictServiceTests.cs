@@ -23,5 +23,6 @@ public class DistrictServiceTests
         var result = await service.GetAllAsync();
 
         Assert.Equal(new[] { "Kesklinn", "Mustamäe", "Pirita" }, result.Select(d => d.Name));
+        Assert.Equal(new[] { 2, 3, 1 }, result.Select(d => d.Id));
     }
 }
