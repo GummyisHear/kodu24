@@ -101,10 +101,12 @@ builder.Services.AddSingleton(TimeProvider.System);
 // Repositooriumid
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Teenused (äriloogika)
 builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IDistrictService, DistrictService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
