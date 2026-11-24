@@ -2,8 +2,13 @@ using Kodu24.Api.Data;
 using Kodu24.Api.Repositories;
 using Kodu24.Api.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Serilog loeb seaded appsettings.json "Serilog" sektsioonist (konsool + päevane logifail).
+builder.Host.UseSerilog((context, config) =>
+    config.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -24,6 +29,9 @@ builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IDistrictService, DistrictService>();
 
 var app = builder.Build();
+
+// Üks logirida iga HTTP päringu kohta (meetod, tee, staatus, kestus).
+app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
