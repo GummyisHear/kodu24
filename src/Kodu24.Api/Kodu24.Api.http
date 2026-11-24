@@ -33,4 +33,55 @@ Content-Type: application/json
 GET {{Kodu24.Api_HostAddress}}/api/auth/me
 Authorization: Bearer {{login.response.body.$.token}}
 
+### Üürileandja sisselogimine
+# @name landlord
+POST {{Kodu24.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "mari@kodu24.ee",
+  "password": "Parool123!"
+}
+
+### Üks kuulutus
+GET {{Kodu24.Api_HostAddress}}/api/listings/1
+
+### Kuulutuse lisamine
+# @name created
+POST {{Kodu24.Api_HostAddress}}/api/listings
+Authorization: Bearer {{landlord.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "title": "Valoisa kahetoaline Kalamajas",
+  "address": "Kotzebue 12-4",
+  "districtId": 2,
+  "price": 720,
+  "rooms": 2,
+  "areaM2": 52.5,
+  "description": "Renoveeritud korter, rõdu hoovi poole.",
+  "latitude": 59.4442,
+  "longitude": 24.7339
+}
+
+### Kuulutuse muutmine
+PUT {{Kodu24.Api_HostAddress}}/api/listings/{{created.response.body.$.id}}
+Authorization: Bearer {{landlord.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "title": "Valoisa kahetoaline Kalamajas (hind alla)",
+  "address": "Kotzebue 12-4",
+  "districtId": 2,
+  "price": 690,
+  "rooms": 2,
+  "areaM2": 52.5,
+  "latitude": 59.4442,
+  "longitude": 24.7339
+}
+
+### Kuulutuse kustutamine
+DELETE {{Kodu24.Api_HostAddress}}/api/listings/{{created.response.body.$.id}}
+Authorization: Bearer {{landlord.response.body.$.token}}
+
 ###
