@@ -29,6 +29,20 @@ public class ListingService : IListingService
         _logger = logger;
     }
 
+    public async Task<PagedResultDto<ListingListItemDto>> SearchAsync(ListingQueryDto query)
+    {
+        if (query.MinPrice > query.MaxPrice)
+            throw new ValidationFailedException(nameof(ListingQueryDto.MinPrice),
+                "Minimaalne hind ei saa olla suurem kui maksimaalne hind.");
+
+        var (items, total) = await _listings.SearchAsync(query);
+        return new PagedResultDto<ListingListItemDto>(
+            items.Select(l => l.ToListItemDto()).ToList(),
+            query.Page,
+            query.PageSize,
+            total);
+    }
+
     public async Task<ListingDetailDto> GetByIdAsync(int id) =>
         (await FindAsync(id)).ToDetailDto();
 

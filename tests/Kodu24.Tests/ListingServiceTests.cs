@@ -120,6 +120,32 @@ public class ListingServiceTests
     }
 
     [Fact]
+    public async Task SearchAsync_MinPriceAboveMax_ThrowsValidationError()
+    {
+        var query = new ListingQueryDto { MinPrice = 900, MaxPrice = 500 };
+
+        var ex = await Assert.ThrowsAsync<ValidationFailedException>(() => CreateService().SearchAsync(query));
+
+        Assert.True(ex.Errors.ContainsKey("MinPrice"));
+        _listings.Verify(l => l.SearchAsync(It.IsAny<ListingQueryDto>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task SearchAsync_MapsItemsAndPaging()
+    {
+        var listing = ExistingListing();
+        listing.Price = 600;
+        listing.AreaM2 = 50;
+        _listings.Setup(l => l.SearchAsync(It.IsAny<ListingQueryDto>())).ReturnsAsync((new List<Listing> { listing }, 25));
+
+        var result = await CreateService().SearchAsync(new ListingQueryDto { Page = 2, PageSize = 10 });
+
+        Assert.Equal(25, result.TotalCount);
+        Assert.Equal(3, result.TotalPages);
+        Assert.Equal(12m, Assert.Single(result.Items).PricePerM2);
+    }
+
+    [Fact]
     public async Task GetByIdAsync_Missing_ThrowsNotFound()
     {
         await Assert.ThrowsAsync<NotFoundException>(() => CreateService().GetByIdAsync(404));
