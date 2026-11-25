@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router'
+import { Link, NavLink, useNavigate } from 'react-router'
 import { roleLabels } from '../auth/roles.js'
 import { useAuth } from '../auth/useAuth.js'
 
@@ -18,6 +18,10 @@ export default function Header() {
           <img src="/logo.svg" alt="" />
           Kodu24
         </Link>
+
+        <nav className="header__nav" aria-label="Peamenüü">
+          <NavLink to="/listings">Kuulutused</NavLink>
+        </nav>
 
         {!loading && (
           <div className="header__user">

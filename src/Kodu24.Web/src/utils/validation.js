@@ -34,4 +34,26 @@ export function validateRegister({ email, password, passwordConfirm, fullName, p
   return errors
 }
 
-export const hasErrors = (errors) => Object.keys(errors).length > 0
+// Otsingufiltrid: samad piirid mis API ListingQueryDto-l.
+export function validateListingFilters({ q, minPrice, maxPrice, rooms }) {
+  const errors = {}
+  const min = minPrice === '' ? null : Number(minPrice)
+  const max = maxPrice === '' ? null : Number(maxPrice)
+
+  if (q.length > 100) errors.q = 'Otsingusõna võib olla kuni 100 tähemärki.'
+  if (min !== null && !(min >= 0 && min <= 100_000)) {
+    errors.minPrice = 'Minimaalne hind peab olema vahemikus 0–100 000 €.'
+  }
+  if (max !== null && !(max >= 0 && max <= 100_000)) {
+    errors.maxPrice = 'Maksimaalne hind peab olema vahemikus 0–100 000 €.'
+  }
+  if (!errors.minPrice && !errors.maxPrice && min !== null && max !== null && min > max) {
+    errors.minPrice = 'Minimaalne hind ei saa olla suurem kui maksimaalne hind.'
+  }
+  if (rooms !== '' && !(Number.isInteger(Number(rooms)) && rooms >= 1 && rooms <= 20)) {
+    errors.rooms = 'Tubade arv peab olema täisarv vahemikus 1–20.'
+  }
+  return errors
+}
+
+export const hasErrors =(errors) => Object.keys(errors).length > 0
