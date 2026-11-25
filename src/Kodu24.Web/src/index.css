@@ -561,3 +561,83 @@ a {
 .gallery__thumb--active {
   border-color: var(--color-primary);
 }
+
+/* Kuulutuse detailvaade */
+.link-button {
+  padding: 0;
+  margin-bottom: 1rem;
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.detail__top {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 860px) {
+  .detail__top {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail__info h1 {
+  margin-bottom: 0.25rem;
+}
+
+.detail__price {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0.75rem 0;
+}
+
+.detail__facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.detail__facts dt {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.detail__facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.detail__landlord {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.detail__landlord h2,
+.detail__section h2 {
+  font-size: 1.1rem;
+}
+
+.detail__landlord p {
+  margin: 0 0 0.25rem;
+}
+
+.detail__section {
+  margin-bottom: 1.5rem;
+}
+
+.detail__description {
+  white-space: pre-line; /* reavahetused kirjeldusest jäävad alles */
+  margin: 0;
+}

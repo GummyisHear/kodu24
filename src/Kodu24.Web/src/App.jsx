@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router'
 import GuestOnly from './components/GuestOnly.jsx'
 import Layout from './components/Layout.jsx'
 import HomePage from './pages/HomePage.jsx'
+import ListingDetailPage from './pages/ListingDetailPage.jsx'
 import ListingsPage from './pages/ListingsPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
@@ -14,6 +15,7 @@ export default function App() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="listings" element={<ListingsPage />} />
+        <Route path="listings/:id" element={<ListingDetailPage />} />
         <Route
           path="login"
           element={
