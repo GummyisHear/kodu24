@@ -1,6 +1,16 @@
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { roleLabels } from '../auth/roles.js'
+import { useAuth } from '../auth/useAuth.js'
 
 export default function Header() {
+  const { user, loading, logout } = useAuth()
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    logout()
+    navigate('/')
+  }
+
   return (
     <header className="header">
       <div className="container header__inner">
@@ -9,12 +19,27 @@ export default function Header() {
           Kodu24
         </Link>
 
-        <div className="header__user">
-          <Link to="/login">Logi sisse</Link>
-          <Link to="/register" className="button">
-            Registreeri
-          </Link>
-        </div>
+        {!loading && (
+          <div className="header__user">
+            {user ? (
+              <>
+                <span className="header__name">
+                  {user.fullName} ({roleLabels[user.role] ?? user.role})
+                </span>
+                <button type="button" className="button button--secondary" onClick={handleLogout}>
+                  Logi välja
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">Logi sisse</Link>
+                <Link to="/register" className="button">
+                  Registreeri
+                </Link>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </header>
   )
