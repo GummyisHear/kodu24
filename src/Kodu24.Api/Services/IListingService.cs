@@ -5,6 +5,9 @@ namespace Kodu24.Api.Services;
 
 public interface IListingService
 {
+    /// <summary>Aktiivsete kuulutuste otsing filtrite, sortimise ja lehekülgedega.</summary>
+    Task<PagedResultDto<ListingListItemDto>> SearchAsync(ListingQueryDto query);
+
     /// <summary>Aktiivne kuulutus. Puudub või kustutatud → <c>NotFoundException</c>.</summary>
     Task<ListingDetailDto> GetByIdAsync(int id);
 

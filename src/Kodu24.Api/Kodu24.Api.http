@@ -43,6 +43,18 @@ Content-Type: application/json
   "password": "Parool123!"
 }
 
+### Kuulutuste otsing (uuemad ees, 12 leheküljel)
+GET {{Kodu24.Api_HostAddress}}/api/listings
+
+### Otsing filtritega: 2 tuba, 400–900 €, odavamad ees
+GET {{Kodu24.Api_HostAddress}}/api/listings?minPrice=400&maxPrice=900&rooms=2&sort=price_asc
+
+### Otsing linnaosa ja otsingusõnaga, teine lehekülg
+GET {{Kodu24.Api_HostAddress}}/api/listings?district=2&q=korter&page=2&pageSize=5
+
+### Vigane päring: min > max -> 400
+GET {{Kodu24.Api_HostAddress}}/api/listings?minPrice=900&maxPrice=400
+
 ### Üks kuulutus
 GET {{Kodu24.Api_HostAddress}}/api/listings/1
 

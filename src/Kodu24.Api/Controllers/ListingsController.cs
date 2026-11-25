@@ -19,6 +19,16 @@ public class ListingsController : ControllerBase
         _listings = listings;
     }
 
+    /// <summary>Otsib aktiivseid kuulutusi. Kõik filtrid on valikulised ja kombineeritavad.</summary>
+    /// <remarks>Näide: <c>GET /api/listings?minPrice=400&amp;maxPrice=900&amp;rooms=2&amp;district=2&amp;sort=price_asc&amp;page=1</c></remarks>
+    /// <response code="200">Üks lehekülg kuulutusi koos kogusummaga.</response>
+    /// <response code="400">Parameetrid on vigased (nt minimaalne hind on suurem kui maksimaalne).</response>
+    [HttpGet]
+    [ProducesResponseType<PagedResultDto<ListingListItemDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PagedResultDto<ListingListItemDto>>> Search([FromQuery] ListingQueryDto query) =>
+        Ok(await _listings.SearchAsync(query));
+
     /// <summary>Tagastab ühe aktiivse kuulutuse koos piltide ja üürileandja kontaktiga.</summary>
     /// <param name="id">Kuulutuse ID.</param>
     /// <response code="200">Kuulutus.</response>
