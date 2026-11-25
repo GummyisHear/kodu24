@@ -469,3 +469,175 @@ a {
 .section-header h2 {
   margin: 0;
 }
+
+/* Pildigalerii */
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gallery__frame {
+  position: relative;
+}
+
+.gallery__main {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius);
+  background: var(--color-border);
+}
+
+.gallery__main--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+}
+
+.gallery__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.85);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gallery__arrow:hover {
+  background: #fff;
+}
+
+.gallery__arrow--prev {
+  left: 0.75rem;
+}
+
+.gallery__arrow--next {
+  right: 0.75rem;
+}
+
+.gallery__counter {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius);
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.gallery__thumbs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.gallery__thumb {
+  flex: 0 0 88px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.gallery__thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.gallery__thumb--active {
+  border-color: var(--color-primary);
+}
+
+/* Kuulutuse detailvaade */
+.link-button {
+  padding: 0;
+  margin-bottom: 1rem;
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.detail__top {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 860px) {
+  .detail__top {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail__info h1 {
+  margin-bottom: 0.25rem;
+}
+
+.detail__price {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0.75rem 0;
+}
+
+.detail__facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.detail__facts dt {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.detail__facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.detail__landlord {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.detail__landlord h2,
+.detail__section h2 {
+  font-size: 1.1rem;
+}
+
+.detail__landlord p {
+  margin: 0 0 0.25rem;
+}
+
+.detail__section {
+  margin-bottom: 1.5rem;
+}
+
+.detail__description {
+  white-space: pre-line; /* reavahetused kirjeldusest jäävad alles */
+  margin: 0;
+}
