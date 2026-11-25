@@ -191,7 +191,8 @@ a {
   font-size: 0.9rem;
 }
 
-.field input {
+.field input,
+.field select {
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -199,7 +200,8 @@ a {
   background: #fff;
 }
 
-.field input:focus {
+.field input:focus,
+.field select:focus {
   outline: 2px solid var(--color-primary);
   outline-offset: 1px;
 }
@@ -357,5 +359,79 @@ a {
 }
 
 .pagination__gap {
+  color: var(--color-muted);
+}
+
+/* Kuulutuste nimekiri */
+.listings-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .listings-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filters {
+  gap: 0.75rem;
+}
+
+.filters__title {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.filters__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.filters__row input {
+  min-width: 0;
+}
+
+.listings-toolbar {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.listings-toolbar h1 {
+  margin: 0;
+}
+
+.listings-toolbar__count {
+  margin: 0;
+  flex: 1;
+}
+
+.listings-toolbar__sort {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.listings-toolbar__sort select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font: inherit;
+  background: #fff;
+}
+
+.listing-grid--loading {
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.empty-state {
+  text-align: center;
   color: var(--color-muted);
 }
