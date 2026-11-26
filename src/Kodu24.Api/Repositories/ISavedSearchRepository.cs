@@ -11,4 +11,7 @@ public interface ISavedSearchRepository : IRepository<SavedSearch>
     Task<List<SavedSearch>> GetByUserAsync(int userId);
 
     Task<int> CountByUserAsync(int userId);
+
+    /// <summary>Kõigi kasutajate salvestatud otsingud (taustateenusele), vanemad eespool.</summary>
+    Task<List<SavedSearch>> GetAllWithDistrictAsync();
 }

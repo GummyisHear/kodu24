@@ -107,6 +107,8 @@ public class AppDbContext : DbContext
         b.Entity<Notification>(e =>
         {
             e.Property(x => x.Message).HasMaxLength(500);
+            // Kustutatud või aegunud kuulutuse teavitused peidetakse.
+            e.HasQueryFilter(x => !x.Listing.IsDeleted);
             e.HasOne(x => x.User).WithMany()
                 .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.SavedSearch).WithMany(s => s.Notifications)

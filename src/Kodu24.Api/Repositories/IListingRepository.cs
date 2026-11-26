@@ -20,6 +20,9 @@ public interface IListingRepository : IRepository<Listing>
     /// <summary>Aktiivsed kuulutused, mille <c>ExpiresAt</c> on möödas.</summary>
     Task<List<Listing>> GetExpiredAsync(DateTime now);
 
+    /// <summary>Aktiivsed kuulutused antud ID-dega (puuduvad ja kustutatud jäetakse välja).</summary>
+    Task<List<Listing>> GetByIdsAsync(IReadOnlyCollection<int> ids);
+
     /// <summary>
     /// Kehtivate kuulutuste arv, keskmine hind ja keskmine €/m² linnaosade kaupa (arvutatakse SQL-is).
     /// Linnaosad, kus kuulutusi pole, tulemusse ei tule.

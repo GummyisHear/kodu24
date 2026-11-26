@@ -29,9 +29,11 @@ public class SavedSearchService : ISavedSearchService
         _logger = logger;
     }
 
-    public async Task<List<SavedSearchDto>> GetMineAsync(CurrentUser user)
+    public async Task<List<SavedSearchDto>> GetListAsync(CurrentUser user)
     {
-        var searches = await _searches.GetByUserAsync(user.Id);
+        var searches = user.IsService
+            ? await _searches.GetAllWithDistrictAsync()
+            : await _searches.GetByUserAsync(user.Id);
         return searches.Select(s => s.ToDto()).ToList();
     }
 
@@ -83,6 +85,22 @@ public class SavedSearchService : ISavedSearchService
         _searches.Remove(search);
         await _searches.SaveChangesAsync();
         _logger.LogInformation("Kasutaja {UserId} kustutas otsingu {SavedSearchId}", user.Id, id);
+    }
+
+    public async Task MarkNotifiedAsync(int id, DateTime notifiedAt)
+    {
+        var search = await _searches.GetWithDistrictAsync(id)
+                     ?? throw new NotFoundException($"Salvestatud otsingut {id} ei leitud.");
+
+        var value = notifiedAt.Kind == DateTimeKind.Utc ? notifiedAt : notifiedAt.ToUniversalTime();
+        if (value > _time.GetUtcNow().UtcDateTime)
+            throw new ValidationFailedException("NotifiedAt", "Teavitamise aeg ei saa olla tulevikus.");
+
+        if (value <= search.LastNotifiedAt)
+            return;
+
+        search.LastNotifiedAt = value;
+        await _searches.SaveChangesAsync();
     }
 
     private async Task<SavedSearch> FindOwnAsync(int id, CurrentUser user)
