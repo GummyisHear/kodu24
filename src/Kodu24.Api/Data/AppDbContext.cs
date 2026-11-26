@@ -1,5 +1,6 @@
 using Kodu24.Api.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kodu24.Api.Data;
 
@@ -15,6 +16,20 @@ public class AppDbContext : DbContext
     public DbSet<Inquiry> Inquiries => Set<Inquiry>();
     public DbSet<SavedSearch> SavedSearches => Set<SavedSearch>();
     public DbSet<Notification> Notifications => Set<Notification>();
+
+    /// <summary>
+    /// SQLite ei salvesta, et aeg on UTC: loetud DateTime oleks "Unspecified" ja JSON-is ilma Z-ta,
+    /// mistõttu brauser tõlgendaks seda kohaliku ajana. Kõik ajad salvestatakse UTC-na ja loetakse UTC-na.
+    /// </summary>
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<DateTime>().HaveConversion<UtcDateTimeConverter>();
+        configurationBuilder.Properties<DateTime?>().HaveConversion<UtcDateTimeConverter>();
+    }
+
+    private sealed class UtcDateTimeConverter() : ValueConverter<DateTime, DateTime>(
+        v => v.Kind == DateTimeKind.Utc ? v : v.ToUniversalTime(),
+        v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
     protected override void OnModelCreating(ModelBuilder b)
     {
