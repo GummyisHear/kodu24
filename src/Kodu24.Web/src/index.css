@@ -387,11 +387,14 @@ a {
 
 .filters__row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, 1fr): veerg võib kitsamaks minna kui sisu vaikelaius */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.5rem;
 }
 
+/* Numbriväljal on brauseri vaikelaius (~170 px); sunnime selle veeru laiuseks. */
 .filters__row input {
+  width: 100%;
   min-width: 0;
 }
 
