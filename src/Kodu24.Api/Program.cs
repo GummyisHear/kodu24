@@ -5,9 +5,11 @@ using Kodu24.Api.Data;
 using Kodu24.Api.Errors;
 using Kodu24.Api.Repositories;
 using Kodu24.Api.Services;
+using Kodu24.Api.Storage;
 using Kodu24.Api.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Serilog;
@@ -116,6 +118,9 @@ builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IInquiryRepository, InquiryRepository>();
 
+// Piltide failid kettal
+builder.Services.AddSingleton<IImageStorage, FileImageStorage>();
+
 // Teenused (äriloogika)
 builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IDistrictService, DistrictService>();
@@ -145,6 +150,15 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+
+// Üleslaaditud pildid: kaust uploads/ on avalik aadressil /uploads/{failinimi}.
+var uploadsFolder = FileImageStorage.GetFolder(app.Environment);
+Directory.CreateDirectory(uploadsFolder);
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsFolder),
+    RequestPath = "/uploads",
+});
 
 app.UseCors(WebClientCors);
 
