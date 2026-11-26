@@ -118,6 +118,7 @@ builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IInquiryRepository, InquiryRepository>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+builder.Services.AddScoped<ISavedSearchRepository, SavedSearchRepository>();
 
 // Piltide failid kettal
 builder.Services.AddSingleton<IImageStorage, FileImageStorage>();
@@ -129,6 +130,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IInquiryService, InquiryService>();
 builder.Services.AddScoped<IListingImageService, ListingImageService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+builder.Services.AddScoped<ISavedSearchService, SavedSearchService>();
 
 var app = builder.Build();
 
