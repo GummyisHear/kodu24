@@ -74,6 +74,8 @@ public class AppDbContext : DbContext
         b.Entity<Favorite>(e =>
         {
             e.HasIndex(x => new { x.UserId, x.ListingId }).IsUnique();
+            // Kustutatud kuulutus kaob ka lemmikute hulgast.
+            e.HasQueryFilter(x => !x.Listing.IsDeleted);
             e.HasOne(x => x.User).WithMany(u => u.Favorites)
                 .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.Listing).WithMany(l => l.Favorites)
