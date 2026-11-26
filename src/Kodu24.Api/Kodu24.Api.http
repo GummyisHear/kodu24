@@ -97,3 +97,32 @@ DELETE {{Kodu24.Api_HostAddress}}/api/listings/{{created.response.body.$.id}}
 Authorization: Bearer {{landlord.response.body.$.token}}
 
 ###
+
+### Päringu saatmine üürileandjale (üürija Liis, kuulutus 1 on Mari oma)
+# @name inquiry
+POST {{Kodu24.Api_HostAddress}}/api/listings/1/inquiries
+Authorization: Bearer {{login.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "message": "Tere! Kas korter on veel vaba ja millal saaks seda vaatama tulla?"
+}
+
+### Liiga lühike sõnum -> 400
+POST {{Kodu24.Api_HostAddress}}/api/listings/1/inquiries
+Authorization: Bearer {{login.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "message": "Tere"
+}
+
+### Üürileandja saabunud päringud
+GET {{Kodu24.Api_HostAddress}}/api/inquiries
+Authorization: Bearer {{landlord.response.body.$.token}}
+
+### Päringu märkimine loetuks
+PATCH {{Kodu24.Api_HostAddress}}/api/inquiries/{{inquiry.response.body.$.id}}/read
+Authorization: Bearer {{landlord.response.body.$.token}}
+
+###

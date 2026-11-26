@@ -114,11 +114,13 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IInquiryRepository, InquiryRepository>();
 
 // Teenused (äriloogika)
 builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IDistrictService, DistrictService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IInquiryService, InquiryService>();
 
 var app = builder.Build();
 

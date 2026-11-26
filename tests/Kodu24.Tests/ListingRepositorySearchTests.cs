@@ -55,6 +55,20 @@ public class ListingRepositorySearchTests : IDisposable
         IsDeleted = deleted,
     };
 
+    [Fact]
+    public async Task DatesAreReadBackAsUtc()
+    {
+        // SQLite ei salvesta DateTime.Kind'i; AppDbContext'i teisendus peab selle UTC-ks tagasi panema,
+        // muidu läheks JSON-i aeg ilma "Z"-ta ja brauser näitaks valet kellaaega.
+        _db.ChangeTracker.Clear();
+
+        var listing = await _repo.GetWithDetailsAsync(1);
+
+        Assert.NotNull(listing);
+        Assert.Equal(DateTimeKind.Utc, listing.CreatedAt.Kind);
+        Assert.Equal(Now.AddDays(-2), listing.CreatedAt);
+    }
+
     private async Task<List<string>> Titles(ListingQueryDto query) =>
         (await _repo.SearchAsync(query)).Items.Select(l => l.Title).ToList();
 

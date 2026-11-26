@@ -36,7 +36,8 @@ Ainult rolli kontrollist ei piisa, sest kõigil üürileandjatel on sama roll. S
 | Registreerimine, sisselogimine | ✅ | – | – | – | – |
 | Kuulutuse lisamine | ❌ | ❌ | ✅ | ✅ | ❌ |
 | Kuulutuse muutmine, kustutamine, pildid | ❌ | ❌ | 👤 | ✅ kõik | ❌ |
-| Saadud päringute vaatamine | ❌ | ❌ | 👤 | ✅ kõik | ❌ |
+| Saadud päringute vaatamine ja loetuks märkimine | ❌ | ❌ | 👤 | ✅ kõik | ❌ |
+| Ühe päringu vaatamine | ❌ | 👤 saatja | 👤 saaja | ✅ | ❌ |
 | Lemmikud | ❌ | 👤 | ❌ | ❌ | ❌ |
 | Päringu saatmine üürileandjale | ❌ | ✅ | ❌ | ❌ | ❌ |
 | Salvestatud otsingud | ❌ | 👤 | ❌ | ❌ | ❌ |
