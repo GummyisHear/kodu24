@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { getListing } from '../api/listings.js'
+import { Roles } from '../auth/roles.js'
+import { useAuth } from '../auth/useAuth.js'
 import ImageGallery from '../components/ImageGallery.jsx'
 import InquiryForm from '../components/InquiryForm.jsx'
 import { formatArea, formatDate, formatPrice, formatPricePerM2, formatRooms } from '../utils/format.js'
@@ -9,6 +11,7 @@ export default function ListingDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
+  const { user } = useAuth()
 
   // Vastus koos ID-ga, millele see kuulub (sama muster mis ListingsPage'il).
   const [response, setResponse] = useState({ id: null, listing: null, error: null })
@@ -50,6 +53,9 @@ export default function ListingDetailPage() {
     )
   }
 
+  // Muutmise nupp omanikule ja adminile (API kontrollib õigust uuesti).
+  const canEdit = user && (user.id === listing.landlord.id || user.role === Roles.Admin)
+
   const mapUrl =
     `https://www.openstreetmap.org/?mlat=${listing.latitude}&mlon=${listing.longitude}` +
     `#map=17/${listing.latitude}/${listing.longitude}`
@@ -68,6 +74,11 @@ export default function ListingDetailPage() {
           <p className="muted">
             {listing.address}, {listing.districtName}
           </p>
+          {canEdit && (
+            <Link to={`/my-listings/${listing.id}/edit`} className="button button--secondary">
+              Muuda kuulutust
+            </Link>
+          )}
           <p className="detail__price">
             {formatPrice(listing.price)} <span className="muted">/ kuu</span>
           </p>

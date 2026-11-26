@@ -67,4 +67,50 @@ export function validateInquiry({ message }) {
   return errors
 }
 
+// Kuulutuse vorm: samad reeglid ja teated mis API ListingRequestDto-l.
+export const DESCRIPTION_MAX_LENGTH = 4000
+
+const inRange = (value, min, max) => value !== '' && Number(value) >= min && Number(value) <= max
+
+export function validateListing(v) {
+  const errors = {}
+  const title = v.title.trim()
+  const address = v.address.trim()
+
+  if (!title) errors.title = 'Pealkiri on kohustuslik.'
+  else if (title.length < 5 || title.length > 150) errors.title = 'Pealkiri peab olema 5–150 tähemärki.'
+
+  if (!address) errors.address = 'Aadress on kohustuslik.'
+  else if (address.length < 3 || address.length > 200) errors.address = 'Aadress peab olema 3–200 tähemärki.'
+
+  if (!v.districtId) errors.districtId = 'Vali linnaosa.'
+  if (!inRange(v.price, 1, 100_000)) errors.price = 'Hind peab olema vahemikus 1–100 000 €.'
+  if (!inRange(v.rooms, 1, 20) || !Number.isInteger(Number(v.rooms))) {
+    errors.rooms = 'Tubade arv peab olema vahemikus 1–20.'
+  }
+  if (!inRange(v.areaM2, 5, 1000)) errors.areaM2 = 'Pind peab olema vahemikus 5–1000 m².'
+  if (v.description.length > DESCRIPTION_MAX_LENGTH) errors.description = 'Kirjeldus võib olla kuni 4000 tähemärki.'
+  if (!inRange(v.latitude, 57.5, 59.9)) errors.latitude = 'Asukoht peab olema Eestis (laiuskraad 57,5–59,9).'
+  if (!inRange(v.longitude, 21.5, 28.3)) errors.longitude = 'Asukoht peab olema Eestis (pikkuskraad 21,5–28,3).'
+
+  return errors
+}
+
+// Pildid: samad piirid mis API ListingImageService'il. Tüüpi kontrollib API faili sisu järgi uuesti.
+export const MAX_IMAGES = 10
+export const MAX_IMAGE_BYTES = 5 * 1024 * 1024
+export const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+
+/** Tagastab veateate või tühja stringi, kui valitud failid sobivad. */
+export function validateImageFiles(files, existingCount = 0) {
+  if (existingCount + files.length > MAX_IMAGES) {
+    return `Kuulutusel võib olla kuni ${MAX_IMAGES} pilti (praegu ${existingCount}).`
+  }
+  for (const file of files) {
+    if (!IMAGE_TYPES.includes(file.type)) return `Fail "${file.name}" ei ole pilt. Lubatud on JPEG, PNG ja WebP.`
+    if (file.size > MAX_IMAGE_BYTES) return `Fail "${file.name}" on liiga suur (lubatud kuni 5 MB).`
+  }
+  return ''
+}
+
 export const hasErrors = (errors) => Object.keys(errors).length > 0

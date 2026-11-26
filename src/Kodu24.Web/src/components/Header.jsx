@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router'
-import { roleLabels } from '../auth/roles.js'
+import { roleLabels, Roles } from '../auth/roles.js'
 import { useAuth } from '../auth/useAuth.js'
 
 export default function Header() {
@@ -20,7 +20,12 @@ export default function Header() {
         </Link>
 
         <nav className="header__nav" aria-label="Peamenüü">
-          <NavLink to="/listings">Kuulutused</NavLink>
+          <NavLink to="/listings" end>
+            Kuulutused
+          </NavLink>
+          {(user?.role === Roles.Landlord || user?.role === Roles.Admin) && (
+            <NavLink to="/my-listings/new">Lisa kuulutus</NavLink>
+          )}
         </nav>
 
         {!loading && (
