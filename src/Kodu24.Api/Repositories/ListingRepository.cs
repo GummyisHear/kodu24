@@ -83,6 +83,18 @@ public class ListingRepository : Repository<Listing>, IListingRepository
     public Task<List<Listing>> GetExpiredAsync(DateTime now) =>
         Set.Where(l => l.ExpiresAt <= now).ToListAsync();
 
+    // Keskmine €/m² = kuulutuste €/m² keskmine (iga kuulutus loeb võrdselt).
+    // SQLite ei oska decimal'iga arvutada (AVG), seega double'i teisendused nagu sortimiselgi.
+    public Task<List<DistrictPriceStats>> GetDistrictPriceStatsAsync(DateTime now) =>
+        Set.Where(l => l.ExpiresAt > now)
+           .GroupBy(l => l.DistrictId)
+           .Select(g => new DistrictPriceStats(
+               g.Key,
+               g.Count(),
+               g.Average(l => (double)l.Price),
+               g.Average(l => (double)l.Price / (double)l.AreaM2)))
+           .ToListAsync();
+
     private static string EscapeLike(string value) =>
         value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
 

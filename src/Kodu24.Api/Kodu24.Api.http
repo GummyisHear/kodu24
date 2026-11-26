@@ -174,3 +174,8 @@ POST {{Kodu24.Api_HostAddress}}/api/favorites/1
 Authorization: Bearer {{landlord.response.body.$.token}}
 
 ###
+
+### Linnaosade keskmine hind ja €/m² (avalik)
+GET {{Kodu24.Api_HostAddress}}/api/districts/stats
+
+###
