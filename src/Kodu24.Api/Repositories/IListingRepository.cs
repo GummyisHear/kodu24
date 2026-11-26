@@ -14,6 +14,9 @@ public interface IListingRepository : IRepository<Listing>
     /// </summary>
     Task<(List<Listing> Items, int TotalCount)> SearchAsync(ListingQueryDto query);
 
+    /// <summary>Üürileandja kuulutused (koos linnaosa, piltide ja päringutega), uuemad eespool.</summary>
+    Task<List<Listing>> GetByLandlordAsync(int landlordId);
+
     /// <summary>Aktiivsed kuulutused, mille <c>ExpiresAt</c> on möödas.</summary>
     Task<List<Listing>> GetExpiredAsync(DateTime now);
 }

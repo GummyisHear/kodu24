@@ -29,6 +29,15 @@ public class ListingsController : ControllerBase
     public async Task<ActionResult<PagedResultDto<ListingListItemDto>>> Search([FromQuery] ListingQueryDto query) =>
         Ok(await _listings.SearchAsync(query));
 
+    /// <summary>Sisselogitud üürileandja enda kuulutused koos piltide ja päringute arvuga, uuemad eespool.</summary>
+    /// <remarks>Leht "Minu kuulutused". Kustutatud kuulutusi siin ei ole; aegunud on seni, kuni taustateenus need eemaldab.</remarks>
+    /// <response code="200">Kuulutuste nimekiri (võib olla tühi).</response>
+    [HttpGet("mine")]
+    [Authorize(Policy = Policies.Landlord)]
+    [ProducesResponseType<List<MyListingDto>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<MyListingDto>>> GetMine() =>
+        Ok(await _listings.GetMineAsync(User.GetCurrentUser()));
+
     /// <summary>Tagastab ühe aktiivse kuulutuse koos piltide ja üürileandja kontaktiga.</summary>
     /// <param name="id">Kuulutuse ID.</param>
     /// <response code="200">Kuulutus.</response>

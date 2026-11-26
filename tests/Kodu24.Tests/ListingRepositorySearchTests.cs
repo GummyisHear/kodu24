@@ -56,6 +56,18 @@ public class ListingRepositorySearchTests : IDisposable
     };
 
     [Fact]
+    public async Task GetByLandlordAsync_ReturnsOwnListingsNewestFirst_WithoutDeleted()
+    {
+        var landlordId = _db.Users.Single().Id;
+
+        var mine = await _repo.GetByLandlordAsync(landlordId);
+
+        Assert.Equal(["Kahetoaline Rõduga", "Valgusküllane kolmetoaline", "Stuudio kesklinnas", "Odav kahetoaline"],
+            mine.Select(l => l.Title));
+        Assert.Empty(await _repo.GetByLandlordAsync(landlordId + 100));
+    }
+
+    [Fact]
     public async Task DatesAreReadBackAsUtc()
     {
         // SQLite ei salvesta DateTime.Kind'i; AppDbContext'i teisendus peab selle UTC-ks tagasi panema,

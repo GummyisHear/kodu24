@@ -13,6 +13,22 @@ public record ListingListItemDto(
     string? PrimaryImageUrl,
     DateTime CreatedAt);
 
+/// <summary>Üürileandja enda kuulutus lehel "Minu kuulutused" (koos päringute arvuga).</summary>
+public record MyListingDto(
+    int Id,
+    string Title,
+    string Address,
+    string DistrictName,
+    decimal Price,
+    int Rooms,
+    decimal AreaM2,
+    string? PrimaryImageUrl,
+    int ImageCount,
+    int InquiryCount,
+    int UnreadInquiryCount,
+    DateTime CreatedAt,
+    DateTime ExpiresAt);
+
 /// <summary>Kuulutuse detailvaade.</summary>
 public record ListingDetailDto(
     int Id,

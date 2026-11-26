@@ -11,6 +11,9 @@ public interface IListingService
     /// <summary>Aktiivne kuulutus. Puudub või kustutatud → <c>NotFoundException</c>.</summary>
     Task<ListingDetailDto> GetByIdAsync(int id);
 
+    /// <summary>Sisselogitud kasutaja enda aktiivsed kuulutused (ka aegunud, mida Worker pole veel eemaldanud).</summary>
+    Task<List<MyListingDto>> GetMineAsync(CurrentUser user);
+
     /// <summary>Loob kuulutuse sisselogitud üürileandjale.</summary>
     Task<ListingDetailDto> CreateAsync(ListingRequestDto request, CurrentUser user);
 
