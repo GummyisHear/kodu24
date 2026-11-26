@@ -65,6 +65,8 @@ public class AppDbContext : DbContext
         b.Entity<Inquiry>(e =>
         {
             e.Property(x => x.Message).HasMaxLength(2000);
+            // Sama filter mis kuulutusel: kustutatud kuulutuse päringud ei tule päringutesse kaasa.
+            e.HasQueryFilter(x => !x.Listing.IsDeleted);
             e.HasOne(x => x.Seeker).WithMany(u => u.Inquiries)
                 .HasForeignKey(x => x.SeekerId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(x => x.Listing).WithMany(l => l.Inquiries)

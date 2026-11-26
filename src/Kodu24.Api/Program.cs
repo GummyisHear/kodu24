@@ -114,6 +114,7 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IInquiryRepository, InquiryRepository>();
 
 // Teenused (äriloogika)
 builder.Services.AddScoped<IListingService, ListingService>();
