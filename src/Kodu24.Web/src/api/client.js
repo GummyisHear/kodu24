@@ -28,14 +28,18 @@ export async function apiFetch(path, { method = 'GET', body } = {}) {
   const headers = { Accept: 'application/json' }
   const token = getToken()
   if (token) headers.Authorization = `Bearer ${token}`
-  if (body !== undefined) headers['Content-Type'] = 'application/json'
+
+  // Failid (FormData) saadetakse multipart/form-data kujul: Content-Type päise koos
+  // "boundary" väärtusega paneb brauser ise. Muu sisu läheb JSON-ina.
+  const isForm = body instanceof FormData
+  if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
 
   let response
   try {
     response = await fetch(API_URL + path, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined || isForm ? body : JSON.stringify(body),
     })
   } catch {
     throw new ApiError(0, { title: 'Serveriga ei saa ühendust. Kontrolli, kas API töötab.' })
