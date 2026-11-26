@@ -103,7 +103,7 @@ function EditListing({ id, districts }) {
     setDeleteError('')
     try {
       await deleteListing(id)
-      navigate('/listings', { replace: true })
+      navigate('/my-listings', { replace: true })
     } catch (err) {
       setDeleteError(err.message)
       setDeleting(false)

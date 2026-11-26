@@ -24,7 +24,7 @@ export default function Header() {
             Kuulutused
           </NavLink>
           {(user?.role === Roles.Landlord || user?.role === Roles.Admin) && (
-            <NavLink to="/my-listings/new">Lisa kuulutus</NavLink>
+            <NavLink to="/my-listings">Minu kuulutused</NavLink>
           )}
         </nav>
 

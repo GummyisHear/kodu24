@@ -10,6 +10,9 @@ export const searchListings = (params = {}) => apiFetch('/api/listings' + toQuer
 /** Ühe kuulutuse detailid: GET /api/listings/{id}. */
 export const getListing = (id) => apiFetch(`/api/listings/${encodeURIComponent(id)}`)
 
+/** Sisselogitud üürileandja enda kuulutused: GET /api/listings/mine. */
+export const getMyListings = () => apiFetch('/api/listings/mine')
+
 /** Uus kuulutus (üürileandja võetakse tokenist). Tagastab loodud kuulutuse. */
 export const createListing = (listing) => apiFetch('/api/listings', { method: 'POST', body: listing })
 
