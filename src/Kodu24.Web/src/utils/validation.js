@@ -56,4 +56,15 @@ export function validateListingFilters({ q, minPrice, maxPrice, rooms }) {
   return errors
 }
 
-export const hasErrors =(errors) => Object.keys(errors).length > 0
+// Päring üürileandjale: samad piirid mis API InquiryRequestDto-l.
+export const INQUIRY_MAX_LENGTH = 2000
+
+export function validateInquiry({ message }) {
+  const errors = {}
+  const length = message.trim().length
+  if (length === 0) errors.message = 'Sõnum on kohustuslik.'
+  else if (length < 10 || length > INQUIRY_MAX_LENGTH) errors.message = 'Sõnum peab olema 10–2000 tähemärki.'
+  return errors
+}
+
+export const hasErrors = (errors) => Object.keys(errors).length > 0

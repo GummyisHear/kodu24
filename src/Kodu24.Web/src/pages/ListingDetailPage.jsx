@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { getListing } from '../api/listings.js'
 import ImageGallery from '../components/ImageGallery.jsx'
+import InquiryForm from '../components/InquiryForm.jsx'
 import { formatArea, formatDate, formatPrice, formatPricePerM2, formatRooms } from '../utils/format.js'
 
 export default function ListingDetailPage() {
@@ -110,6 +111,8 @@ export default function ListingDetailPage() {
         <h2>Kirjeldus</h2>
         <p className="detail__description">{listing.description}</p>
       </section>
+
+      <InquiryForm listing={listing} />
 
       <section className="card detail__section">
         <h2>Asukoht</h2>
