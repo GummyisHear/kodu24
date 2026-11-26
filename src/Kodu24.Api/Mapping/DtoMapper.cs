@@ -98,6 +98,7 @@ public static class DtoMapper
 
     public static SavedSearchDto ToDto(this SavedSearch s) => new(
         s.Id,
+        s.UserId,
         s.Name,
         s.MinPrice,
         s.MaxPrice,

@@ -30,6 +30,7 @@ public record InquiryDto(
 
 public record SavedSearchDto(
     int Id,
+    int UserId,
     string Name,
     decimal? MinPrice,
     decimal? MaxPrice,
@@ -38,6 +39,12 @@ public record SavedSearchDto(
     string? DistrictName,
     DateTime CreatedAt,
     DateTime LastNotifiedAt);
+
+/// <summary>Tulemus päringule <c>POST /api/listings/expire</c>.</summary>
+public record ExpireResultDto(int ExpiredCount);
+
+/// <summary>Tulemus päringule <c>POST /api/notifications</c>.</summary>
+public record CreateNotificationsResultDto(int CreatedCount, int SkippedCount);
 
 public record NotificationDto(
     int Id,

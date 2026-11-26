@@ -19,4 +19,7 @@ public class SavedSearchRepository : Repository<SavedSearch>, ISavedSearchReposi
            .ToListAsync();
 
     public Task<int> CountByUserAsync(int userId) => Set.CountAsync(s => s.UserId == userId);
+
+    public Task<List<SavedSearch>> GetAllWithDistrictAsync() =>
+        Set.AsNoTracking().Include(s => s.District).OrderBy(s => s.Id).ToListAsync();
 }

@@ -93,4 +93,13 @@ public class ListingsController : ControllerBase
         await _listings.DeleteAsync(id, User.GetCurrentUser());
         return NoContent();
     }
+
+    /// <summary>Taustateenus: kustutab (soft delete) kõik kuulutused, mille kehtivus on lõppenud.</summary>
+    /// <remarks>Taustateenus kutsub seda kord tunnis. Korduv kutse on ohutu: juba kustutatud kuulutusi ei puudutata.</remarks>
+    /// <response code="200">Mitu kuulutust märgiti aegunuks.</response>
+    [HttpPost("expire")]
+    [Authorize(Policy = Policies.Service)]
+    [ProducesResponseType<ExpireResultDto>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<ExpireResultDto>> Expire() =>
+        Ok(new ExpireResultDto(await _listings.ExpireListingsAsync()));
 }

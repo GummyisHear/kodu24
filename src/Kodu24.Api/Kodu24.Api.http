@@ -222,3 +222,53 @@ DELETE {{Kodu24.Api_HostAddress}}/api/saved-searches/{{savedSearch.response.body
 Authorization: Bearer {{login.response.body.$.token}}
 
 ###
+
+### Taustateenuse sisselogimine (Service-konto)
+# @name service
+POST {{Kodu24.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "service@kodu24.ee",
+  "password": "Parool123!"
+}
+
+### 1. Aegunud kuulutuste kustutamine
+POST {{Kodu24.Api_HostAddress}}/api/listings/expire
+Authorization: Bearer {{service.response.body.$.token}}
+
+### 2. Kõik salvestatud otsingud (taustateenus näeb kõiki)
+GET {{Kodu24.Api_HostAddress}}/api/saved-searches
+Authorization: Bearer {{service.response.body.$.token}}
+
+### 3. Uued kuulutused otsingu kohta (createdAfter = lastNotifiedAt)
+GET {{Kodu24.Api_HostAddress}}/api/listings?maxPrice=800&rooms=2&district=2&createdAfter=2026-11-01T00:00:00Z&sort=oldest
+
+### 4a. Teavituste loomine (korduv päring ei tekita duplikaate)
+POST {{Kodu24.Api_HostAddress}}/api/notifications
+Authorization: Bearer {{service.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "savedSearchId": 1,
+  "listingIds": [3, 5]
+}
+
+### 4b. Otsingu kursori edasiliigutamine (viimase teavitatud kuulutuse loomise aeg)
+PATCH {{Kodu24.Api_HostAddress}}/api/saved-searches/1/notified
+Authorization: Bearer {{service.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "notifiedAt": "2026-11-20T10:00:00Z"
+}
+
+### Minu teavitused (üürija)
+GET {{Kodu24.Api_HostAddress}}/api/notifications
+Authorization: Bearer {{login.response.body.$.token}}
+
+### Teavituse märkimine loetuks
+PATCH {{Kodu24.Api_HostAddress}}/api/notifications/1/read
+Authorization: Bearer {{login.response.body.$.token}}
+
+###

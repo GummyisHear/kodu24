@@ -10,6 +10,8 @@ namespace Kodu24.Api.Auth;
 public record CurrentUser(int Id, UserRole Role)
 {
     public bool IsAdmin => Role == UserRole.Admin;
+
+    public bool IsService => Role == UserRole.Service;
 }
 
 public static class CurrentUserExtensions

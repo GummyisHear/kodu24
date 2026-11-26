@@ -30,11 +30,15 @@ public static class Policies
     /// <summary>Taustateenuse (Worker) otspunktid.</summary>
     public const string Service = "Service";
 
+    /// <summary>Salvestatud otsingute nimekiri: üürija näeb enda omi, taustateenus kõiki.</summary>
+    public const string SeekerOrService = "SeekerOrService";
+
     public static void AddKodu24Policies(this AuthorizationOptions options)
     {
         options.AddPolicy(Landlord, p => p.RequireRole(Roles.Landlord, Roles.Admin));
         options.AddPolicy(Seeker, p => p.RequireRole(Roles.Seeker));
         options.AddPolicy(Admin, p => p.RequireRole(Roles.Admin));
         options.AddPolicy(Service, p => p.RequireRole(Roles.Service));
+        options.AddPolicy(SeekerOrService, p => p.RequireRole(Roles.Seeker, Roles.Service));
     }
 }

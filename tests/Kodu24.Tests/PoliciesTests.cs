@@ -29,6 +29,9 @@ public class PoliciesTests
     [InlineData(Policies.Admin, Roles.Landlord, false)]
     [InlineData(Policies.Service, Roles.Service, true)]
     [InlineData(Policies.Service, Roles.Admin, false)]
+    [InlineData(Policies.SeekerOrService, Roles.Seeker, true)]
+    [InlineData(Policies.SeekerOrService, Roles.Service, true)]
+    [InlineData(Policies.SeekerOrService, Roles.Admin, false)]
     public async Task Policy_AllowsOnlyExpectedRoles(string policy, string role, bool expected)
     {
         var result = await Authorization.AuthorizeAsync(UserWithRole(role), policy);

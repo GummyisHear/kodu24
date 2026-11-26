@@ -133,6 +133,44 @@ public class SavedSearchServiceTests
     }
 
     [Fact]
+    public async Task GetListAsync_SeekerGetsOwn_ServiceGetsAll()
+    {
+        _searches.Setup(s => s.GetByUserAsync(Seeker.Id)).ReturnsAsync([ExistingSearch(Seeker.Id)]);
+        _searches.Setup(s => s.GetAllWithDistrictAsync()).ReturnsAsync([ExistingSearch(Seeker.Id), ExistingSearch(OtherSeeker.Id)]);
+
+        var own = await CreateService().GetListAsync(Seeker);
+        var all = await CreateService().GetListAsync(new CurrentUser(99, UserRole.Service));
+
+        Assert.Single(own);
+        Assert.Equal([Seeker.Id, OtherSeeker.Id], all.Select(s => s.UserId));
+    }
+
+    [Fact]
+    public async Task MarkNotifiedAsync_MovesCursorForwardOnly()
+    {
+        var search = ExistingSearch(Seeker.Id);
+        var original = search.LastNotifiedAt;
+        _searches.Setup(s => s.GetWithDistrictAsync(7)).ReturnsAsync(search);
+
+        // Varasem aeg jäetakse tähelepanuta, et samade kuulutuste kohta uusi teavitusi ei tuleks.
+        await CreateService().MarkNotifiedAsync(7, original.AddHours(-1));
+        Assert.Equal(original, search.LastNotifiedAt);
+
+        await CreateService().MarkNotifiedAsync(7, original.AddHours(1));
+        Assert.Equal(original.AddHours(1), search.LastNotifiedAt);
+        _searches.Verify(s => s.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task MarkNotifiedAsync_FutureTime_ThrowsValidationError()
+    {
+        _searches.Setup(s => s.GetWithDistrictAsync(7)).ReturnsAsync(ExistingSearch(Seeker.Id));
+
+        await Assert.ThrowsAsync<ValidationFailedException>(() =>
+            CreateService().MarkNotifiedAsync(7, Now.UtcDateTime.AddMinutes(5)));
+    }
+
+    [Fact]
     public async Task GetByIdAsync_Missing_ThrowsNotFound()
     {
         await Assert.ThrowsAsync<NotFoundException>(() => CreateService().GetByIdAsync(404, Seeker));
