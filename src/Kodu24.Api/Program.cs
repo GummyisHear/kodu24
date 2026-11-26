@@ -126,6 +126,7 @@ builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IDistrictService, DistrictService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IInquiryService, InquiryService>();
+builder.Services.AddScoped<IListingImageService, ListingImageService>();
 
 var app = builder.Build();
 
