@@ -2,6 +2,17 @@ namespace Kodu24.Api.Dtos;
 
 public record DistrictDto(int Id, string Name);
 
+/// <summary>
+/// Linnaosa hinnastatistika kehtivate kuulutuste põhjal. Kui linnaosas kuulutusi pole,
+/// on arv 0 ja keskmised <c>null</c>.
+/// </summary>
+public record DistrictStatsDto(
+    int DistrictId,
+    string DistrictName,
+    int ListingCount,
+    decimal? AveragePrice,
+    decimal? AveragePricePerM2);
+
 /// <summary>Kasutaja andmed. Parooli räsi ei lahku kunagi API-st.</summary>
 public record UserDto(int Id, string Email, string FullName, string? Phone, string Role, DateTime CreatedAt);
 

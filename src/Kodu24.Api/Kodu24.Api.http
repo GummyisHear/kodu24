@@ -175,6 +175,9 @@ Authorization: Bearer {{landlord.response.body.$.token}}
 
 ###
 
+### Linnaosade keskmine hind ja €/m² (avalik)
+GET {{Kodu24.Api_HostAddress}}/api/districts/stats
+
 ### Otsingu salvestamine (üürija Liis): kahetoaline Kalamajas kuni 800 €
 # @name savedSearch
 POST {{Kodu24.Api_HostAddress}}/api/saved-searches

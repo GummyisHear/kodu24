@@ -23,4 +23,15 @@ public class DistrictsController : ControllerBase
     [ProducesResponseType<List<DistrictDto>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<DistrictDto>>> GetAll() =>
         Ok(await _districts.GetAllAsync());
+
+    /// <summary>Linnaosade keskmine üür ja keskmine hind ruutmeetri kohta (€/m²).</summary>
+    /// <remarks>
+    /// Arvestatakse ainult kehtivaid kuulutusi. Keskmine €/m² on kuulutuste €/m² keskmine.
+    /// Kallimad linnaosad on eespool; kus kuulutusi pole, seal on keskmised <c>null</c> ja linnaosa on lõpus.
+    /// </remarks>
+    /// <response code="200">Statistika kõigi linnaosade kohta.</response>
+    [HttpGet("stats")]
+    [ProducesResponseType<List<DistrictStatsDto>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<DistrictStatsDto>>> GetStats() =>
+        Ok(await _districts.GetStatsAsync());
 }
