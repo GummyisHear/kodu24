@@ -81,6 +81,30 @@ public class ListingRepositorySearchTests : IDisposable
         Assert.Equal(Now.AddDays(-2), listing.CreatedAt);
     }
 
+    [Fact]
+    public async Task GetDistrictPriceStatsAsync_AveragesActiveListingsPerDistrict()
+    {
+        var stats = (await _repo.GetDistrictPriceStatsAsync(Now)).ToDictionary(s => s.DistrictId);
+
+        var kesklinn = stats[_kesklinn.Id];
+        Assert.Equal(2, kesklinn.ListingCount);
+        Assert.Equal(735, kesklinn.AveragePrice, 2);                          // (950 + 520) / 2
+        Assert.Equal((950.0 / 72 + 520.0 / 28) / 2, kesklinn.AveragePricePerM2, 6);
+
+        // Kustutatud kuulutus (300 €) ei lähe arvesse.
+        var kalamaja = stats[_kalamaja.Id];
+        Assert.Equal(2, kalamaja.ListingCount);
+        Assert.Equal(615, kalamaja.AveragePrice, 2);
+        Assert.Equal((780.0 / 48 + 450.0 / 50) / 2, kalamaja.AveragePricePerM2, 6);
+    }
+
+    [Fact]
+    public async Task GetDistrictPriceStatsAsync_IgnoresExpiredListings()
+    {
+        // Kõik testkuulutused aeguvad 30 päeva pärast.
+        Assert.Empty(await _repo.GetDistrictPriceStatsAsync(Now.AddDays(31)));
+    }
+
     private async Task<List<string>> Titles(ListingQueryDto query) =>
         (await _repo.SearchAsync(query)).Items.Select(l => l.Title).ToList();
 
