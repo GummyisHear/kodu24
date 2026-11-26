@@ -152,3 +152,25 @@ DELETE {{Kodu24.Api_HostAddress}}/api/listings/1/images/1
 Authorization: Bearer {{landlord.response.body.$.token}}
 
 ###
+
+### Lemmikuks lisamine (üürija Liis). Teist korda -> 200, mitte duplikaat.
+POST {{Kodu24.Api_HostAddress}}/api/favorites/1
+Authorization: Bearer {{login.response.body.$.token}}
+
+### Minu lemmikud
+GET {{Kodu24.Api_HostAddress}}/api/favorites
+Authorization: Bearer {{login.response.body.$.token}}
+
+### Lemmikute kuulutuste ID-d
+GET {{Kodu24.Api_HostAddress}}/api/favorites/ids
+Authorization: Bearer {{login.response.body.$.token}}
+
+### Lemmikutest eemaldamine
+DELETE {{Kodu24.Api_HostAddress}}/api/favorites/1
+Authorization: Bearer {{login.response.body.$.token}}
+
+### Üürileandja ei saa lemmikuid lisada -> 403
+POST {{Kodu24.Api_HostAddress}}/api/favorites/1
+Authorization: Bearer {{landlord.response.body.$.token}}
+
+###
