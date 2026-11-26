@@ -65,8 +65,11 @@ public class AppDbContext : DbContext
         });
 
         b.Entity<ListingImage>(e =>
+        {
+            e.HasQueryFilter(x => !x.Listing.IsDeleted);
             e.HasOne(x => x.Listing).WithMany(l => l.Images)
-                .HasForeignKey(x => x.ListingId).OnDelete(DeleteBehavior.Cascade));
+                .HasForeignKey(x => x.ListingId).OnDelete(DeleteBehavior.Cascade);
+        });
 
         b.Entity<Favorite>(e =>
         {

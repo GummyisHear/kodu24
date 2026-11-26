@@ -126,3 +126,25 @@ PATCH {{Kodu24.Api_HostAddress}}/api/inquiries/{{inquiry.response.body.$.id}}/re
 Authorization: Bearer {{landlord.response.body.$.token}}
 
 ###
+
+### Piltide üleslaadimine (multipart/form-data). Asenda failitee oma pildiga (JPEG, PNG või WebP).
+POST {{Kodu24.Api_HostAddress}}/api/listings/1/images
+Authorization: Bearer {{landlord.response.body.$.token}}
+Content-Type: multipart/form-data; boundary=kodu24
+
+--kodu24
+Content-Disposition: form-data; name="files"; filename="pilt.jpg"
+Content-Type: image/jpeg
+
+< C:/Users/Public/Pictures/pilt.jpg
+--kodu24--
+
+### Põhipildi muutmine
+PUT {{Kodu24.Api_HostAddress}}/api/listings/1/images/1/primary
+Authorization: Bearer {{landlord.response.body.$.token}}
+
+### Pildi kustutamine
+DELETE {{Kodu24.Api_HostAddress}}/api/listings/1/images/1
+Authorization: Bearer {{landlord.response.body.$.token}}
+
+###

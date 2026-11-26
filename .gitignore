@@ -490,3 +490,6 @@ $RECYCLE.BIN/
 
 # Serilogi logifailid
 logs/
+
+# Üleslaaditud kuulutuste pildid (API kaust uploads/)
+src/Kodu24.Api/uploads/
