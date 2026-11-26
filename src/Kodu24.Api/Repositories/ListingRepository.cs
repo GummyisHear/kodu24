@@ -69,6 +69,16 @@ public class ListingRepository : Repository<Listing>, IListingRepository
         return (items, total);
     }
 
+    public Task<List<Listing>> GetByLandlordAsync(int landlordId) =>
+        Set.AsNoTracking()
+           .Where(l => l.LandlordId == landlordId)
+           .Include(l => l.District)
+           .Include(l => l.Images)
+           .Include(l => l.Inquiries)
+           .OrderByDescending(l => l.CreatedAt).ThenByDescending(l => l.Id)
+           .AsSplitQuery()
+           .ToListAsync();
+
     // Kustutatud kuulutused on globaalse päringufiltriga juba välja jäetud.
     public Task<List<Listing>> GetExpiredAsync(DateTime now) =>
         Set.Where(l => l.ExpiresAt <= now).ToListAsync();

@@ -8,6 +8,7 @@ import ListingDetailPage from './pages/ListingDetailPage.jsx'
 import ListingFormPage from './pages/ListingFormPage.jsx'
 import ListingsPage from './pages/ListingsPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import MyListingsPage from './pages/MyListingsPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 
@@ -21,6 +22,14 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="listings" element={<ListingsPage />} />
         <Route path="listings/:id" element={<ListingDetailPage />} />
+        <Route
+          path="my-listings"
+          element={
+            <RequireAuth roles={LANDLORD_ROLES}>
+              <MyListingsPage />
+            </RequireAuth>
+          }
+        />
         <Route
           path="my-listings/new"
           element={

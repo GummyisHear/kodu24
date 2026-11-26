@@ -32,6 +32,22 @@ public class DtoMapperTests
     }
 
     [Fact]
+    public void ToMyListingDto_CountsImagesAndUnreadInquiries()
+    {
+        var listing = SampleListing();
+        listing.Inquiries.Add(new Inquiry { Id = 1, IsRead = true });
+        listing.Inquiries.Add(new Inquiry { Id = 2, IsRead = false });
+        listing.Inquiries.Add(new Inquiry { Id = 3, IsRead = false });
+
+        var dto = listing.ToMyListingDto();
+
+        Assert.Equal(2, dto.ImageCount);
+        Assert.Equal(3, dto.InquiryCount);
+        Assert.Equal(2, dto.UnreadInquiryCount);
+        Assert.Equal("/uploads/a.jpg", dto.PrimaryImageUrl);
+    }
+
+    [Fact]
     public void ToListItemDto_UsesPrimaryImage_OrFirstBySortOrder()
     {
         var listing = SampleListing();

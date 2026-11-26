@@ -73,6 +73,18 @@ public class ListingServiceTests
     }
 
     [Fact]
+    public async Task GetMineAsync_AsksRepositoryOnlyForCurrentUsersListings()
+    {
+        _listings.Setup(l => l.GetByLandlordAsync(Owner.Id)).ReturnsAsync([ExistingListing()]);
+
+        var mine = await CreateService().GetMineAsync(Owner);
+
+        Assert.Equal(10, Assert.Single(mine).Id);
+        _listings.Verify(l => l.GetByLandlordAsync(Owner.Id), Times.Once);
+        _listings.Verify(l => l.GetByLandlordAsync(It.Is<int>(id => id != Owner.Id)), Times.Never);
+    }
+
+    [Fact]
     public async Task CreateAsync_UnknownDistrict_ThrowsValidationError()
     {
         var ex = await Assert.ThrowsAsync<ValidationFailedException>(() => CreateService().CreateAsync(Request(99), Owner));

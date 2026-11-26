@@ -45,6 +45,22 @@ public static class DtoMapper
         new LandlordDto(l.Landlord.Id, l.Landlord.FullName, l.Landlord.Phone),
         l.Images.OrderBy(i => i.SortOrder).Select(i => i.ToDto()).ToList());
 
+    /// <summary>Vajab laaditud <c>District</c>, <c>Images</c> ja <c>Inquiries</c> navigatsioone.</summary>
+    public static MyListingDto ToMyListingDto(this Listing l) => new(
+        l.Id,
+        l.Title,
+        l.Address,
+        l.District.Name,
+        l.Price,
+        l.Rooms,
+        l.AreaM2,
+        PrimaryImage(l) is { } img ? ImageUrl(img) : null,
+        l.Images.Count,
+        l.Inquiries.Count,
+        l.Inquiries.Count(i => !i.IsRead),
+        l.CreatedAt,
+        l.ExpiresAt);
+
     /// <summary>Kopeerib sisendi väljad olemile (lisamisel ja muutmisel).</summary>
     public static void ApplyTo(this ListingRequestDto r, Listing l)
     {

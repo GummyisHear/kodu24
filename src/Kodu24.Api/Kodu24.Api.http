@@ -58,6 +58,10 @@ GET {{Kodu24.Api_HostAddress}}/api/listings?minPrice=900&maxPrice=400
 ### Üks kuulutus
 GET {{Kodu24.Api_HostAddress}}/api/listings/1
 
+### Minu kuulutused (üürileandja)
+GET {{Kodu24.Api_HostAddress}}/api/listings/mine
+Authorization: Bearer {{landlord.response.body.$.token}}
+
 ### Kuulutuse lisamine
 # @name created
 POST {{Kodu24.Api_HostAddress}}/api/listings

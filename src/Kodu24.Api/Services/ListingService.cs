@@ -46,6 +46,9 @@ public class ListingService : IListingService
     public async Task<ListingDetailDto> GetByIdAsync(int id) =>
         (await FindAsync(id)).ToDetailDto();
 
+    public async Task<List<MyListingDto>> GetMineAsync(CurrentUser user) =>
+        (await _listings.GetByLandlordAsync(user.Id)).Select(l => l.ToMyListingDto()).ToList();
+
     public async Task<ListingDetailDto> CreateAsync(ListingRequestDto request, CurrentUser user)
     {
         await EnsureDistrictExistsAsync(request.DistrictId);
