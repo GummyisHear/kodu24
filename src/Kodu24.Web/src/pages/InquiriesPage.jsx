@@ -1,20 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { getInquiries, markInquiryRead } from '../api/inquiries.js'
 import { Roles } from '../auth/roles.js'
 import { useAuth } from '../auth/useAuth.js'
+import { useInquirySocket } from '../realtime/useInquirySocket.js'
+
+const STATUS_TEXT = {
+  connecting: 'Ühendan…',
+  open: 'Reaalajas: uued päringud ilmuvad siia kohe',
+  reconnecting: 'Ühendus katkes, proovin uuesti…',
+}
 
 const formatDateTime = (iso) => new Date(iso).toLocaleString('et-EE', { dateStyle: 'short', timeStyle: 'short' })
 
 /**
  * /inquiries: üürileandja kuulutustele saabunud päringud (admin näeb kõiki).
- * Ligipääs: üürileandja ja admin (vt App.jsx).
+ * Uued päringud tulevad WebSocketi kaudu (InquirySocketProvider) ja lisatakse nimekirja
+ * algusesse ilma lehte uuesti laadimata. Ligipääs: üürileandja ja admin (vt App.jsx).
  */
 export default function InquiriesPage() {
   const { user } = useAuth()
   const [inquiries, setInquiries] = useState(null)
   const [error, setError] = useState('')
   const [onlyUnread, setOnlyUnread] = useState(false)
+  // Selle lehe avamise järel saabunud päringud (esile tõstetud).
+  const [freshIds, setFreshIds] = useState(() => new Set())
+  const { status, subscribe, clearNew } = useInquirySocket()
+  const previousStatus = useRef(status)
 
   useEffect(() => {
     let cancelled = false
@@ -25,6 +37,39 @@ export default function InquiriesPage() {
       cancelled = true
     }
   }, [])
+
+  // Päises olev "uute päringute" märk kustub, kui leht on avatud.
+  useEffect(() => {
+    clearNew()
+    return clearNew
+  }, [clearNew])
+
+  // Reaalajas päring: lisame nimekirja algusesse (kui seda seal juba pole).
+  useEffect(
+    () =>
+      subscribe((inquiry) => {
+        setInquiries((current) =>
+          current && !current.some((i) => i.id === inquiry.id) ? [inquiry, ...current] : current,
+        )
+        setFreshIds((current) => new Set(current).add(inquiry.id))
+        clearNew()
+      }),
+    [subscribe, clearNew],
+  )
+
+  // Kui ühendus vahepeal katkes, võis mõni päring tulemata jääda: pärast taasühendust laeme nimekirja uuesti.
+  useEffect(() => {
+    const wasReconnecting = previousStatus.current === 'reconnecting'
+    previousStatus.current = status
+    if (status !== 'open' || !wasReconnecting) return
+    let cancelled = false
+    getInquiries()
+      .then((data) => !cancelled && setInquiries(data))
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [status])
 
   async function handleMarkRead(inquiry) {
     setError('')
@@ -44,8 +89,14 @@ export default function InquiriesPage() {
       <div className="section-header">
         <div>
           <h1>Saabunud päringud</h1>
-          {user.role === Roles.Admin && <p className="muted">Admin näeb kõigi kuulutuste päringuid.</p>}
+          {user.role === Roles.Admin && (
+            <p className="muted">Admin näeb kõigi kuulutuste päringuid, reaalajas ainult enda kuulutuste omi.</p>
+          )}
         </div>
+        <p className={`live-status live-status--${status}`} role="status">
+          <span className="live-status__dot" aria-hidden="true" />
+          {STATUS_TEXT[status]}
+        </p>
       </div>
 
       {error && (
@@ -86,7 +137,12 @@ export default function InquiriesPage() {
       {visible?.length > 0 && (
         <ul className="inquiries__list">
           {visible.map((inquiry) => (
-            <InquiryItem key={inquiry.id} inquiry={inquiry} onMarkRead={handleMarkRead} />
+            <InquiryItem
+              key={inquiry.id}
+              inquiry={inquiry}
+              fresh={freshIds.has(inquiry.id)}
+              onMarkRead={handleMarkRead}
+            />
           ))}
         </ul>
       )}
@@ -94,9 +150,9 @@ export default function InquiriesPage() {
   )
 }
 
-function InquiryItem({ inquiry, onMarkRead }) {
+function InquiryItem({ inquiry, fresh, onMarkRead }) {
   const replySubject = encodeURIComponent(`Kodu24: ${inquiry.listingTitle}`)
-  const className = ['card', 'inquiry', !inquiry.isRead && 'inquiry--unread'].filter(Boolean).join(' ')
+  const className = ['card', 'inquiry', !inquiry.isRead && 'inquiry--unread', fresh && 'inquiry--fresh'].filter(Boolean).join(' ')
 
   return (
     <li className={className}>

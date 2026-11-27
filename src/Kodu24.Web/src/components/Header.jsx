@@ -1,10 +1,12 @@
 import { Link, NavLink, useNavigate } from 'react-router'
 import { roleLabels, Roles } from '../auth/roles.js'
 import { useAuth } from '../auth/useAuth.js'
+import { useInquirySocket } from '../realtime/useInquirySocket.js'
 
 export default function Header() {
   const { user, loading, logout } = useAuth()
   const navigate = useNavigate()
+  const { newCount } = useInquirySocket()
 
   function handleLogout() {
     logout()
@@ -26,7 +28,14 @@ export default function Header() {
           {(user?.role === Roles.Landlord || user?.role === Roles.Admin) && (
             <>
               <NavLink to="/my-listings">Minu kuulutused</NavLink>
-              <NavLink to="/inquiries">Päringud</NavLink>
+              <NavLink to="/inquiries">
+                Päringud
+                {newCount > 0 && (
+                  <span className="badge header__badge" aria-label={`${newCount} uut päringut`}>
+                    {newCount}
+                  </span>
+                )}
+              </NavLink>
             </>
           )}
           {user?.role === Roles.Seeker && (

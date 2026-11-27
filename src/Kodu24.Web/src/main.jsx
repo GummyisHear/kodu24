@@ -5,13 +5,16 @@ import './index.css'
 import App from './App.jsx'
 import AuthProvider from './auth/AuthProvider.jsx'
 import FavoritesProvider from './favorites/FavoritesProvider.jsx'
+import InquirySocketProvider from './realtime/InquirySocketProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <FavoritesProvider>
-          <App />
+          <InquirySocketProvider>
+            <App />
+          </InquirySocketProvider>
         </FavoritesProvider>
       </AuthProvider>
     </BrowserRouter>

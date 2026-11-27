@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router'
 import Footer from './Footer.jsx'
 import Header from './Header.jsx'
+import InquiryToast from './InquiryToast.jsx'
 
 /** Kõigi lehtede ühine raam: päis, sisu ja jalus. */
 export default function Layout() {
@@ -11,6 +12,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <InquiryToast />
     </div>
   )
 }
