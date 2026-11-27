@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { getListing } from '../api/listings.js'
 import { Roles } from '../auth/roles.js'
 import { useAuth } from '../auth/useAuth.js'
+import FavoriteButton from '../components/FavoriteButton.jsx'
 import ImageGallery from '../components/ImageGallery.jsx'
 import InquiryForm from '../components/InquiryForm.jsx'
 import { formatArea, formatDate, formatPrice, formatPricePerM2, formatRooms } from '../utils/format.js'
@@ -82,6 +83,7 @@ export default function ListingDetailPage() {
           <p className="detail__price">
             {formatPrice(listing.price)} <span className="muted">/ kuu</span>
           </p>
+          <FavoriteButton listingId={listing.id} variant="full" />
 
           <dl className="detail__facts">
             <div>
