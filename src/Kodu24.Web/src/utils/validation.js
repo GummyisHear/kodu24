@@ -56,6 +56,15 @@ export function validateListingFilters({ q, minPrice, maxPrice, rooms }) {
   return errors
 }
 
+// Salvestatud otsing: samad piirid mis API SavedSearchRequestDto-l (hinna ja tubade reeglid nagu otsingufiltritel).
+export function validateSavedSearch(values) {
+  const errors = validateListingFilters({ ...values, q: '' })
+  const name = values.name.trim()
+  if (!name) errors.name = 'Nimi on kohustuslik.'
+  else if (name.length < 2 || name.length > 100) errors.name = 'Nimi peab olema 2–100 tähemärki.'
+  return errors
+}
+
 // Päring üürileandjale: samad piirid mis API InquiryRequestDto-l.
 export const INQUIRY_MAX_LENGTH = 2000
 
