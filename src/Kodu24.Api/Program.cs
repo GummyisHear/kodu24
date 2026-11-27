@@ -153,7 +153,17 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
-    DbSeeder.Seed(db);
+
+    // Teenusekonto parool ei ole repos: Seed:ServicePassword (user-secrets või keskkonnamuutuja Seed__ServicePassword).
+    // Arenduses kasutatakse testkontode parooli, et värske kloon töötaks ilma seadistuseta.
+    var servicePassword = app.Configuration["Seed:ServicePassword"];
+    if (string.IsNullOrWhiteSpace(servicePassword))
+    {
+        if (!app.Environment.IsDevelopment())
+            throw new InvalidOperationException("Seed:ServicePassword puudub (teenusekonto parool).");
+        servicePassword = DbSeeder.DevPassword;
+    }
+    DbSeeder.Seed(db, servicePassword);
 }
 
 app.UseHttpsRedirection();

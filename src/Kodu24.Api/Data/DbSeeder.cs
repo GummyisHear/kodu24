@@ -5,10 +5,15 @@ namespace Kodu24.Api.Data;
 
 public static class DbSeeder
 {
-    // Ainult arenduse jaoks. Päris keskkonnas tuleb paroolid konfiguratsioonist.
-    private const string DevPassword = "Parool123!";
+    /// <summary>Testkontode parool. Ainult arenduse jaoks.</summary>
+    public const string DevPassword = "Parool123!";
 
-    public static void Seed(AppDbContext db)
+    /// <param name="db">Andmebaas.</param>
+    /// <param name="servicePassword">
+    /// Teenusekonto (taustateenus) parool konfiguratsioonist <c>Seed:ServicePassword</c>; arenduses vaikimisi
+    /// <see cref="DevPassword"/>. Taustateenusel peab olema sama parool (<c>Api:ServicePassword</c>).
+    /// </param>
+    public static void Seed(AppDbContext db, string servicePassword)
     {
         if (db.Users.Any()) return;
 
@@ -19,7 +24,13 @@ public static class DbSeeder
         var landlord2 = new User { Email = "jaan@kodu24.ee", FullName = "Jaan Kask", Phone = "+3725551002", Role = UserRole.Landlord, PasswordHash = hash };
         var seeker1 = new User { Email = "liis@kodu24.ee", FullName = "Liis Mägi", Role = UserRole.Seeker, PasswordHash = hash };
         var seeker2 = new User { Email = "toomas@kodu24.ee", FullName = "Toomas Saar", Role = UserRole.Seeker, PasswordHash = hash };
-        var service = new User { Email = "service@kodu24.ee", FullName = "Teenusekonto", Role = UserRole.Service, PasswordHash = hash };
+        var service = new User
+        {
+            Email = "service@kodu24.ee",
+            FullName = "Teenusekonto",
+            Role = UserRole.Service,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(servicePassword),
+        };
         db.Users.AddRange(admin, landlord1, landlord2, seeker1, seeker2, service);
 
         var districtNames = new[]
