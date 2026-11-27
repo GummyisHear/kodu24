@@ -11,7 +11,9 @@ public record ListingListItemDto(
     decimal AreaM2,
     decimal PricePerM2,
     string? PrimaryImageUrl,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    double Latitude,
+    double Longitude);
 
 /// <summary>Üürileandja enda kuulutus lehel "Minu kuulutused" (koos päringute arvuga).</summary>
 public record MyListingDto(

@@ -25,7 +25,9 @@ public static class DtoMapper
         l.AreaM2,
         PricePerM2(l.Price, l.AreaM2),
         PrimaryImage(l) is { } img ? ImageUrl(img) : null,
-        l.CreatedAt);
+        l.CreatedAt,
+        l.Latitude,
+        l.Longitude);
 
     public static ListingDetailDto ToDetailDto(this Listing l) => new(
         l.Id,

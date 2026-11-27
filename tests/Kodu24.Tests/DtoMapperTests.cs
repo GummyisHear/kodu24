@@ -16,6 +16,8 @@ public class DtoMapperTests
         Price = 650m,
         AreaM2 = 48m,
         Rooms = 2,
+        Latitude = 59.4370,
+        Longitude = 24.7536,
         Images =
         {
             new ListingImage { Id = 1, FileName = "b.jpg", SortOrder = 2 },
@@ -65,6 +67,15 @@ public class DtoMapperTests
         listing.Images.Clear();
 
         Assert.Null(listing.ToListItemDto().PrimaryImageUrl);
+    }
+
+    [Fact]
+    public void ToListItemDto_IncludesCoordinatesForMap()
+    {
+        var dto = SampleListing().ToListItemDto();
+
+        Assert.Equal(59.4370, dto.Latitude);
+        Assert.Equal(24.7536, dto.Longitude);
     }
 
     [Fact]
