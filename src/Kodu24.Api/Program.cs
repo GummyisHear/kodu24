@@ -3,6 +3,7 @@ using System.Text;
 using Kodu24.Api.Auth;
 using Kodu24.Api.Data;
 using Kodu24.Api.Errors;
+using Kodu24.Api.RealTime;
 using Kodu24.Api.Repositories;
 using Kodu24.Api.Services;
 using Kodu24.Api.Storage;
@@ -94,6 +95,18 @@ builder.Services
             NameClaimType = AuthClaims.Name,
             RoleClaimType = AuthClaims.Role,
         };
+        // Brauseri WebSocket ei saa saata Authorization päist, seega /ws/... aadressidel loetakse token
+        // päringuparameetrist access_token. Mujal kehtib ainult päis.
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Query["access_token"].ToString();
+                if (!string.IsNullOrEmpty(token) && context.HttpContext.Request.Path.StartsWithSegments("/ws"))
+                    context.Token = token;
+                return Task.CompletedTask;
+            },
+        };
     });
 builder.Services.AddAuthorization(options => options.AddKodu24Policies());
 
@@ -120,6 +133,10 @@ builder.Services.AddScoped<IInquiryRepository, InquiryRepository>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 builder.Services.AddScoped<ISavedSearchRepository, SavedSearchRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
+// Reaalajas teated (WebSocket): üks jagatud hub, mida teenused kasutavad IInquiryNotifier'i kaudu.
+builder.Services.AddSingleton<WebSocketHub>();
+builder.Services.AddSingleton<IInquiryNotifier>(sp => sp.GetRequiredService<WebSocketHub>());
 
 // Piltide failid kettal
 builder.Services.AddSingleton<IImageStorage, FileImageStorage>();
@@ -179,9 +196,13 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseCors(WebClientCors);
 
+// WebSocketid (/ws/inquiries). KeepAlive hoiab ühenduse lahti ka siis, kui teateid pikalt ei tule.
+app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(30) });
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapInquiryWebSocket();
 
 app.Run();

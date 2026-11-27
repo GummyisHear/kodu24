@@ -2,6 +2,7 @@ using Kodu24.Api.Auth;
 using Kodu24.Api.Dtos;
 using Kodu24.Api.Entities;
 using Kodu24.Api.Exceptions;
+using Kodu24.Api.RealTime;
 using Kodu24.Api.Repositories;
 using Kodu24.Api.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -19,12 +20,13 @@ public class InquiryServiceTests
 
     private readonly Mock<IInquiryRepository> _inquiries = new();
     private readonly Mock<IListingRepository> _listings = new();
+    private readonly Mock<IInquiryNotifier> _notifier = new();
 
     private InquiryService CreateService()
     {
         var time = new Mock<TimeProvider>();
         time.Setup(t => t.GetUtcNow()).Returns(Now);
-        return new InquiryService(_inquiries.Object, _listings.Object, time.Object, NullLogger<InquiryService>.Instance);
+        return new InquiryService(_inquiries.Object, _listings.Object, _notifier.Object, time.Object, NullLogger<InquiryService>.Instance);
     }
 
     private static Listing ListingOf(int landlordId) => new() { Id = 10, LandlordId = landlordId, Title = "Kahetoaline" };
@@ -67,11 +69,30 @@ public class InquiryServiceTests
     }
 
     [Fact]
+    public async Task CreateAsync_NotifiesListingOwnerAfterSaving()
+    {
+        var listing = ListingOf(Landlord.Id);
+        _listings.Setup(l => l.GetByIdAsync(10)).ReturnsAsync(listing);
+        var calls = new List<string>();
+        _inquiries.Setup(i => i.SaveChangesAsync()).Callback(() => calls.Add("save")).ReturnsAsync(1);
+        _inquiries.Setup(i => i.GetWithDetailsAsync(It.IsAny<int>())).ReturnsAsync(InquiryFor(listing));
+        _notifier.Setup(n => n.InquiryReceivedAsync(It.IsAny<int>(), It.IsAny<InquiryDto>()))
+            .Callback(() => calls.Add("notify")).Returns(Task.CompletedTask);
+
+        await CreateService().CreateAsync(10, Request(), Seeker);
+
+        // Teade läheb kuulutuse omanikule ja alles siis, kui päring on andmebaasis.
+        Assert.Equal(["save", "notify"], calls);
+        _notifier.Verify(n => n.InquiryReceivedAsync(Landlord.Id, It.Is<InquiryDto>(d => d.ListingId == 10)), Times.Once);
+    }
+
+    [Fact]
     public async Task CreateAsync_MissingListing_ThrowsNotFoundAndSavesNothing()
     {
         await Assert.ThrowsAsync<NotFoundException>(() => CreateService().CreateAsync(99, Request(), Seeker));
 
         _inquiries.Verify(i => i.AddAsync(It.IsAny<Inquiry>()), Times.Never);
+        _notifier.Verify(n => n.InquiryReceivedAsync(It.IsAny<int>(), It.IsAny<InquiryDto>()), Times.Never);
     }
 
     [Fact]

@@ -272,3 +272,9 @@ PATCH {{Kodu24.Api_HostAddress}}/api/notifications/1/read
 Authorization: Bearer {{login.response.body.$.token}}
 
 ###
+
+### Reaalajas päringuteated: WebSocket (.http fail seda ei toeta, proovi brauseri konsoolis):
+# const ws = new WebSocket("ws://localhost:5134/ws/inquiries?access_token=<üürileandja token>")
+# ws.onmessage = (e) => console.log(JSON.parse(e.data))   // { type: "InquiryReceived", data: { ...päring } }
+
+###
