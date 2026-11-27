@@ -6,6 +6,7 @@ import { useAuth } from '../auth/useAuth.js'
 import FavoriteButton from '../components/FavoriteButton.jsx'
 import ImageGallery from '../components/ImageGallery.jsx'
 import InquiryForm from '../components/InquiryForm.jsx'
+import LocationMap from '../map/LocationMap.jsx'
 import { formatArea, formatDate, formatPrice, formatPricePerM2, formatRooms } from '../utils/format.js'
 
 export default function ListingDetailPage() {
@@ -129,10 +130,11 @@ export default function ListingDetailPage() {
 
       <section className="card detail__section">
         <h2>Asukoht</h2>
-        <p>
+        <LocationMap latitude={listing.latitude} longitude={listing.longitude} />
+        <p className="detail__map-link">
           {listing.address}, {listing.districtName}.{' '}
           <a href={mapUrl} target="_blank" rel="noreferrer">
-            Vaata kaardil (OpenStreetMap)
+            Ava suurem kaart (OpenStreetMap)
           </a>
         </p>
       </section>

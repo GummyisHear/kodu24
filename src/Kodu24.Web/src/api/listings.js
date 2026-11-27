@@ -7,6 +7,30 @@ import { apiFetch, toQueryString } from './client.js'
  */
 export const searchListings = (params = {}) => apiFetch('/api/listings' + toQueryString(params))
 
+/** API lubab leheküljel kuni 50 kuulutust (ListingQueryDto.PageSize). */
+const MAP_PAGE_SIZE = 50
+/** Kaardil näidatakse kuni 500 kuulutust (10 lehekülge), et päringuid ei tuleks lõputult. */
+const MAP_MAX_PAGES = 10
+
+/**
+ * Kõik filtritele vastavad kuulutused kaardi jaoks: loeb lehekülgi järjest, kuni need saavad otsa.
+ * Tagastab { items, totalCount }; totalCount > items.length tähendab, et kõiki ei näidata.
+ */
+export async function searchAllListings(params = {}) {
+  const items = []
+  let page = 1
+  let totalPages = 1
+  let totalCount = 0
+  do {
+    const result = await searchListings({ ...params, page, pageSize: MAP_PAGE_SIZE })
+    items.push(...result.items)
+    totalPages = result.totalPages
+    totalCount = result.totalCount
+    page += 1
+  } while (page <= totalPages && page <= MAP_MAX_PAGES)
+  return { items, totalCount }
+}
+
 /** Ühe kuulutuse detailid: GET /api/listings/{id}. */
 export const getListing = (id) => apiFetch(`/api/listings/${encodeURIComponent(id)}`)
 
