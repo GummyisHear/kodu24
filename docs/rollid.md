@@ -43,11 +43,13 @@ Ainult rolli kontrollist ei piisa, sest kõigil üürileandjatel on sama roll. S
 | Päringu saatmine üürileandjale | ❌ | ✅ | ❌ | ❌ | ❌ |
 | Salvestatud otsingud | ❌ | 👤 | ❌ | ❌ | ❌ |
 | Teavitused | ❌ | 👤 | ❌ | ❌ | ❌ |
-| Kasutajate ja kuulutuste haldus | ❌ | ❌ | ❌ | ✅ | ❌ |
+| Kasutajate ja kuulutuste haldus (`/api/admin`: rollid, kustutatud kuulutused ja taastamine, ülevaade) | ❌ | ❌ | ❌ | ✅ | ❌ |
 | Aegunud kuulutuste märkimine, teavituste loomine | ❌ | ❌ | ❌ | ❌ | ✅ |
 | Kõigi salvestatud otsingute lugemine | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 Isiklikke andmeid (salvestatud otsingud, teavitused) ei näe ka admin: neid näeb ainult omanik.
+
+Admin ei saa muuta enda rolli (et mitte end välja lukustada) ega teenusekonto rolli. Uus roll hakkab kehtima pärast uut sisselogimist.
 
 ## Kus see koodis on
 
