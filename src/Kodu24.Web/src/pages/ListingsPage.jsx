@@ -5,6 +5,7 @@ import { searchListings } from '../api/listings.js'
 import ListingCard from '../components/ListingCard.jsx'
 import ListingFilters from '../components/ListingFilters.jsx'
 import Pagination from '../components/Pagination.jsx'
+import SaveSearchPanel from '../components/SaveSearchPanel.jsx'
 import { formatListingCount } from '../utils/format.js'
 
 // Väärtused vastavad API ListingSort konstantidele.
@@ -81,6 +82,7 @@ export default function ListingsPage() {
     <div className="listings-layout">
       <aside>
         <ListingFilters key={query} searchParams={searchParams} districts={districts} onSearch={handleSearch} />
+        <SaveSearchPanel key={query} searchParams={searchParams} districts={districts} />
       </aside>
 
       <section>

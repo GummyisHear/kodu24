@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage.jsx'
 import MyListingsPage from './pages/MyListingsPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
+import SavedSearchesPage from './pages/SavedSearchesPage.jsx'
 
 const LANDLORD_ROLES = [Roles.Landlord, Roles.Admin]
 const SEEKER_ROLES = [Roles.Seeker]
@@ -29,6 +30,14 @@ export default function App() {
           element={
             <RequireAuth roles={SEEKER_ROLES}>
               <FavoritesPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="saved-searches"
+          element={
+            <RequireAuth roles={SEEKER_ROLES}>
+              <SavedSearchesPage />
             </RequireAuth>
           }
         />
