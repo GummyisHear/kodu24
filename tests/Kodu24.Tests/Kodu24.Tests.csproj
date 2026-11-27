@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Kodu24.Api\Kodu24.Api.csproj" />
+    <ProjectReference Include="..\..\src\Kodu24.Worker\Kodu24.Worker.csproj" />
   </ItemGroup>
 
 </Project>
