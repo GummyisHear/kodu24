@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { DESCRIPTION_MAX_LENGTH, hasErrors, IMAGE_TYPES, validateImageFiles, validateListing } from '../utils/validation.js'
+import LocationPicker from '../map/LocationPicker.jsx'
 import FormField from './FormField.jsx'
 
 const EMPTY = {
@@ -51,6 +52,12 @@ export default function ListingForm({ listing, districts, submitLabel, onSubmit,
     const { name, value } = event.target
     setValues((current) => ({ ...current, [name]: value }))
     setErrors((current) => ({ ...current, [name]: undefined }))
+  }
+
+  // Kaardilt valitud asukoht täidab koordinaatide väljad.
+  function handlePick(latitude, longitude) {
+    setValues((current) => ({ ...current, latitude: String(latitude), longitude: String(longitude) }))
+    setErrors((current) => ({ ...current, latitude: undefined, longitude: undefined }))
   }
 
   function handleFiles(event) {
@@ -127,17 +134,15 @@ export default function ListingForm({ listing, districts, submitLabel, onSubmit,
         error={errors.description}
       />
 
+      <div className="field">
+        <span className="field__label">Asukoht kaardil</span>
+        <LocationPicker latitude={values.latitude} longitude={values.longitude} onPick={handlePick} />
+        <span className="field__hint">Klõpsa kaardil maja kohal või lohista nõela. Koordinaadid täituvad ise.</span>
+      </div>
       <div className="form-grid">
         <FormField label="Laiuskraad" name="latitude" type="number" step="any" placeholder="59.4370" value={values.latitude} onChange={handleChange} error={errors.latitude} />
         <FormField label="Pikkuskraad" name="longitude" type="number" step="any" placeholder="24.7536" value={values.longitude} onChange={handleChange} error={errors.longitude} />
       </div>
-      <p className="field__hint">
-        Koordinaadid leiad nt{' '}
-        <a href="https://www.openstreetmap.org" target="_blank" rel="noreferrer">
-          openstreetmap.org
-        </a>
-        -ist: paremklõps kaardil → „Näita aadressi”.
-      </p>
 
       {withImages && (
         <div className={errors.files ? 'field field--invalid' : 'field'}>

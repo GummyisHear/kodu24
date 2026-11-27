@@ -1282,3 +1282,12 @@ a {
 .map-popup__title {
   font-weight: 600;
 }
+
+.field__label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.detail__map-link {
+  margin-top: 0.75rem;
+}
