@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { getDistricts } from '../api/districts.js'
 import { searchListings } from '../api/listings.js'
 import ListingCard from '../components/ListingCard.jsx'
@@ -78,6 +78,12 @@ export default function ListingsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Kaardile viiakse samad filtrid (ilma lehekülje ja sortimiseta).
+  const mapParams = new URLSearchParams(searchParams)
+  mapParams.delete('page')
+  mapParams.delete('sort')
+  const mapQuery = mapParams.toString()
+
   return (
     <div className="listings-layout">
       <aside>
@@ -104,6 +110,9 @@ export default function ListingsPage() {
               ))}
             </select>
           </label>
+          <Link to={`/map${mapQuery ? `?${mapQuery}` : ''}`} className="button button--secondary">
+            Näita kaardil
+          </Link>
         </div>
 
         {error && (

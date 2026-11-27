@@ -10,6 +10,7 @@ import ListingDetailPage from './pages/ListingDetailPage.jsx'
 import ListingFormPage from './pages/ListingFormPage.jsx'
 import ListingsPage from './pages/ListingsPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import MapPage from './pages/MapPage.jsx'
 import MyListingsPage from './pages/MyListingsPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
@@ -26,6 +27,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="listings" element={<ListingsPage />} />
         <Route path="listings/:id" element={<ListingDetailPage />} />
+        <Route path="map" element={<MapPage />} />
         <Route
           path="favorites"
           element={

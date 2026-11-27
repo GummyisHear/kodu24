@@ -25,6 +25,7 @@ export default function Header() {
           <NavLink to="/listings" end>
             Kuulutused
           </NavLink>
+          <NavLink to="/map">Kaart</NavLink>
           {(user?.role === Roles.Landlord || user?.role === Roles.Admin) && (
             <>
               <NavLink to="/my-listings">Minu kuulutused</NavLink>

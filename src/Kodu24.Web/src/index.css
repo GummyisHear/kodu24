@@ -1193,3 +1193,92 @@ a {
     animation: none;
   }
 }
+
+/* Kaart (Leaflet + OpenStreetMap) */
+.map {
+  width: 100%;
+  height: 320px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 0; /* Leafleti kihid ei tohi katta päist ega teadet */
+}
+
+.map--large {
+  height: min(70vh, 640px);
+}
+
+.map--small {
+  height: 260px;
+}
+
+.map__empty {
+  margin-top: 0.75rem;
+}
+
+/* divIcon ümbris: Leafleti vaikimisi valge kast eemaldatud */
+.map-marker {
+  background: none;
+  border: none;
+}
+
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+}
+
+.map-pin--price {
+  padding: 0.2rem 0.5rem;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.35);
+  cursor: pointer;
+}
+
+.map-pin--price:hover {
+  background: var(--color-accent);
+  color: var(--color-text);
+}
+
+.map-pin--dot {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  background: var(--color-primary);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.35);
+  transform: translate(-50%, -100%) rotate(-45deg);
+  transform-origin: center;
+}
+
+.map-popup {
+  min-width: 180px;
+  font-family: inherit;
+}
+
+.map-popup p {
+  margin: 0 0 0.25rem;
+}
+
+.map-popup__image {
+  display: block;
+  width: 100%;
+  height: 100px;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.map-popup__price {
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.map-popup__title {
+  font-weight: 600;
+}
