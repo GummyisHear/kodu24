@@ -272,3 +272,40 @@ PATCH {{Kodu24.Api_HostAddress}}/api/notifications/1/read
 Authorization: Bearer {{login.response.body.$.token}}
 
 ###
+
+### Haldus (admin): ülevaade
+# @name admin
+POST {{Kodu24.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@kodu24.ee",
+  "password": "Parool123!"
+}
+
+### Portaali ülevaade
+GET {{Kodu24.Api_HostAddress}}/api/admin/stats
+Authorization: Bearer {{admin.response.body.$.token}}
+
+### Kasutajad (filter rolli järgi)
+GET {{Kodu24.Api_HostAddress}}/api/admin/users?role=Landlord
+Authorization: Bearer {{admin.response.body.$.token}}
+
+### Kasutaja rolli muutmine
+PATCH {{Kodu24.Api_HostAddress}}/api/admin/users/5/role
+Authorization: Bearer {{admin.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "role": "Landlord"
+}
+
+### Kustutatud kuulutused
+GET {{Kodu24.Api_HostAddress}}/api/admin/listings?status=deleted
+Authorization: Bearer {{admin.response.body.$.token}}
+
+### Kuulutuse taastamine
+POST {{Kodu24.Api_HostAddress}}/api/admin/listings/15/restore
+Authorization: Bearer {{admin.response.body.$.token}}
+
+###

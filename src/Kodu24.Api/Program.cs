@@ -134,6 +134,10 @@ builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<ISavedSearchService, SavedSearchService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
+// Haldus (admin): oma repositoorium, sest see näeb ka kustutatud kuulutusi.
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
