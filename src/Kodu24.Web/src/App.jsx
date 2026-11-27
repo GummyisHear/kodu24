@@ -5,6 +5,7 @@ import Layout from './components/Layout.jsx'
 import RequireAuth from './components/RequireAuth.jsx'
 import HomePage from './pages/HomePage.jsx'
 import FavoritesPage from './pages/FavoritesPage.jsx'
+import InquiriesPage from './pages/InquiriesPage.jsx'
 import ListingDetailPage from './pages/ListingDetailPage.jsx'
 import ListingFormPage from './pages/ListingFormPage.jsx'
 import ListingsPage from './pages/ListingsPage.jsx'
@@ -46,6 +47,14 @@ export default function App() {
           element={
             <RequireAuth roles={LANDLORD_ROLES}>
               <MyListingsPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="inquiries"
+          element={
+            <RequireAuth roles={LANDLORD_ROLES}>
+              <InquiriesPage />
             </RequireAuth>
           }
         />
