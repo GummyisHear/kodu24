@@ -3,6 +3,7 @@ using Kodu24.Api.Dtos;
 using Kodu24.Api.Entities;
 using Kodu24.Api.Exceptions;
 using Kodu24.Api.Mapping;
+using Kodu24.Api.RealTime;
 using Kodu24.Api.Repositories;
 
 namespace Kodu24.Api.Services;
@@ -11,17 +12,20 @@ public class InquiryService : IInquiryService
 {
     private readonly IInquiryRepository _inquiries;
     private readonly IListingRepository _listings;
+    private readonly IInquiryNotifier _notifier;
     private readonly TimeProvider _time;
     private readonly ILogger<InquiryService> _logger;
 
     public InquiryService(
         IInquiryRepository inquiries,
         IListingRepository listings,
+        IInquiryNotifier notifier,
         TimeProvider time,
         ILogger<InquiryService> logger)
     {
         _inquiries = inquiries;
         _listings = listings;
+        _notifier = notifier;
         _time = time;
         _logger = logger;
     }
@@ -48,9 +52,12 @@ public class InquiryService : IInquiryService
         _logger.LogInformation("Kasutaja {UserId} saatis päringu {InquiryId} kuulutusele {ListingId}",
             user.Id, inquiry.Id, listing.Id);
 
-        // #20: siin (pärast salvestamist) saadetakse üürileandjale WebSocketi teade InquiryReceived.
+        var dto = (await FindAsync(inquiry.Id)).ToDto();
 
-        return (await FindAsync(inquiry.Id)).ToDto();
+        // Alles pärast salvestamist: üürileandja näeb päringut kohe, kui tal on leht lahti (WebSocket).
+        await _notifier.InquiryReceivedAsync(listing.LandlordId, dto);
+
+        return dto;
     }
 
     public async Task<List<InquiryDto>> GetReceivedAsync(CurrentUser user)

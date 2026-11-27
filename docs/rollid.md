@@ -37,6 +37,7 @@ Ainult rolli kontrollist ei piisa, sest kõigil üürileandjatel on sama roll. S
 | Kuulutuse lisamine | ❌ | ❌ | ✅ | ✅ | ❌ |
 | Kuulutuse muutmine, kustutamine, pildid | ❌ | ❌ | 👤 | ✅ kõik | ❌ |
 | Saadud päringute vaatamine ja loetuks märkimine | ❌ | ❌ | 👤 | ✅ kõik | ❌ |
+| Reaalajas päringuteated (WebSocket `/ws/inquiries`) | ❌ | ❌ | 👤 | 👤 enda kuulutused | ❌ |
 | Ühe päringu vaatamine | ❌ | 👤 saatja | 👤 saaja | ✅ | ❌ |
 | Lemmikud | ❌ | 👤 | ❌ | ❌ | ❌ |
 | Päringu saatmine üürileandjale | ❌ | ✅ | ❌ | ❌ | ❌ |
